@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Guía Semanal</title>
+<link rel="icon" href="data:,">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Guía Semanal">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0f2742">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+:root{
+  --navy:#0f2742; --navy2:#173a5e; --ink:#16202b; --muted:#5b6876; --line:#d5dbe2; --line2:#e8ecf0;
+  --bg:#f3f5f7; --card:#ffffff; --int:#1f5f9e; --int-bg:#e8f0f9; --ext:#b45309; --ext-bg:#fdf1e3;
+  --ok:#1e7a45; --ok-bg:#e5f4ea; --warn:#a15c00; --warn-bg:#fff4dc; --bad:#b42318; --bad-bg:#fde9e7;
+  --focus:#2f7de1;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.4 "Segoe UI",system-ui,-apple-system,Arial,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--int)}
+.mono{font-family:Consolas,"Cascadia Mono","Courier New",monospace}
+
+/* barra superior */
+#top{background:var(--navy);color:#fff;display:flex;align-items:center;gap:16px;padding:calc(8px + env(safe-area-inset-top)) 16px 8px;flex-wrap:wrap;position:sticky;top:0;z-index:20}
+#top .brand{display:flex;flex-direction:column;line-height:1.15;min-width:180px}
+#top .brand b{font-size:15px;letter-spacing:.06em}
+#top .brand span{font-size:11px;opacity:.75;letter-spacing:.05em;text-transform:uppercase}
+.weeknav{position:relative;display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.08);border-radius:8px;padding:3px}
+.weeknav button{background:none;border:0;color:#fff;padding:5px 9px;border-radius:6px;cursor:pointer}
+.weeknav button:hover{background:rgba(255,255,255,.14)}
+.weeknav .wk{padding:0 8px;text-align:center;min-width:210px;line-height:1.15}
+.weeknav .wk b{display:block;font-size:14px;letter-spacing:.05em}
+.weeknav .wk small{opacity:.8;font-size:11.5px}
+#top .spacer{flex:1}
+.who{display:flex;align-items:center;gap:8px;font-size:13px}
+.who .u{text-align:right;line-height:1.15}
+.who .u small{display:block;opacity:.75;font-size:11px}
+.badge{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:99px;text-transform:uppercase;white-space:nowrap}
+.b-srv{background:#1e7a45;color:#fff}.b-loc{background:#a15c00;color:#fff}.b-off{background:#b42318;color:#fff}
+.b-int{background:var(--int-bg);color:var(--int)}.b-ext{background:var(--ext-bg);color:var(--ext)}
+.b-admin{background:#e9e3fb;color:#5b3fb5}.b-ed{background:var(--line2);color:var(--muted)}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;padding:6px 12px;border-radius:7px;cursor:pointer;white-space:nowrap;font-size:13.5px}
+.btn:hover{border-color:#aab4bf;background:#fafbfc}
+.btn.pri{background:var(--navy2);border-color:var(--navy2);color:#fff}.btn.pri:hover{background:var(--navy)}
+.btn.ext{background:var(--ext);border-color:var(--ext);color:#fff}
+.btn.danger{color:var(--bad);border-color:#f0c4bf}.btn.danger:hover{background:var(--bad-bg)}
+.btn.ghost{background:transparent;border-color:transparent}
+.btn.sm{padding:3px 8px;font-size:12.5px}
+#top .btn{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:#fff}
+#top .btn:hover{background:rgba(255,255,255,.2)}
+#top .btn.new{background:#fff;color:var(--navy);border-color:#fff;font-weight:600}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--focus);outline-offset:1px}
+
+/* pestañas */
+#tabs{display:flex;gap:2px;padding:0 16px;background:var(--navy2);overflow-x:auto;position:sticky;top:var(--tophh,56px);z-index:19}
+#tabs button{background:none;border:0;color:#cfe0f1;padding:9px 14px;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;font-size:13.5px}
+#tabs button:hover{color:#fff}
+#tabs button.on{color:#fff;border-bottom-color:#f3b453;font-weight:600}
+#tabs .cnt{display:inline-block;min-width:18px;padding:0 5px;margin-left:5px;border-radius:9px;background:rgba(255,255,255,.18);font-size:11px;text-align:center}
+#banner{display:none}
+.bannerbox{margin:12px 16px 0;padding:10px 14px;border-radius:8px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.bannerbox.warn{background:var(--warn-bg);border:1px solid #f1d49b}
+.bannerbox.info{background:var(--int-bg);border:1px solid #c5d9ef}
+main{padding:16px;max-width:1500px;margin:0 auto}
+.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.toolbar h2{margin:0 12px 0 0;font-size:18px;letter-spacing:.02em}
+.toolbar .grow{flex:1}
+.toolbar select,.toolbar input[type=search]{border:1px solid var(--line);border-radius:7px;padding:6px 8px;background:#fff}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px}
+.pad{padding:14px 16px}
+.muted{color:var(--muted)}
+.small{font-size:12.5px}
+.empty{padding:40px;text-align:center;color:var(--muted)}
+
+/* calendario */
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-top:1px solid var(--line);border-left:1px solid var(--line);background:#fff;border-radius:10px;overflow:hidden}
+.cal .dh{background:var(--line2);padding:6px 8px;font-size:11.5px;font-weight:700;letter-spacing:.06em;color:var(--muted);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.cal .d{min-height:118px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:4px 5px 6px;position:relative;cursor:default}
+.cal .d.out{background:#fafbfc}.cal .d.out .n{opacity:.4}
+.cal .d.today{box-shadow:inset 0 0 0 2px var(--focus)}
+.cal .d.selw{background:#fbfaf3}
+.cal .d .hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.cal .d .n{font-weight:700;font-size:13px;cursor:pointer;padding:0 4px;border-radius:4px}
+.cal .d .n:hover{background:var(--line2)}
+.cal .d .g{font-size:10px;color:var(--muted);letter-spacing:.04em}
+.cal .d .add{position:absolute;right:4px;bottom:3px;opacity:0;border:0;background:var(--navy2);color:#fff;border-radius:5px;width:22px;height:22px;cursor:pointer;line-height:1}
+.cal .d:hover .add{opacity:1}
+.chip{display:block;width:100%;text-align:left;font-size:11.5px;line-height:1.25;padding:2px 5px;margin:1px 0;border-radius:4px;border:0;border-left:3px solid var(--int);background:var(--int-bg);color:var(--ink);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip.ext{border-left-color:var(--ext);background:var(--ext-bg)}
+.chip.anual{background:#f1f3f5;border-left-color:#8796a5;color:var(--muted)}
+.chip.cx{text-decoration:line-through;opacity:.55}
+.chip b{font-weight:600}
+.more{font-size:11px;color:var(--muted);cursor:pointer;padding:0 5px}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--muted);align-items:center;flex-wrap:wrap}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+
+/* tablas de guía */
+table.g{width:100%;min-width:900px;border-collapse:collapse;background:#fff;font-size:12.5px}
+table.g th,table.g td{border:1px solid #9aa6b2;padding:4px 6px;vertical-align:top}
+table.g thead th{background:#dfe5eb;font-size:11.5px;letter-spacing:.04em}
+table.g td.c{text-align:center}
+table.g tr.dayrow td{background:var(--navy);color:#fff;font-weight:700;letter-spacing:.05em;font-size:13px;padding:6px 8px}
+table.g tr.dayrow td .gu{float:right;font-weight:600;opacity:.9}
+table.g tr.dayrow td .gu.edit{cursor:pointer;text-decoration:underline dotted}
+table.g tr.ev{cursor:pointer}
+table.g tr.ev:hover td{background:#f6f9fc}
+table.g tr.ev.ext td:first-child{box-shadow:inset 4px 0 0 var(--ext)}
+table.g tr.cx td{text-decoration:line-through;color:#8a95a1}
+table.g tr.empty td{color:var(--muted);font-style:italic;text-align:center}
+table.g .evn{font-size:11px;color:var(--muted);display:block}
+table.g .obs{margin:0;padding:0;list-style:none}
+table.g .tag{font-size:10px;font-weight:700;padding:0 4px;border-radius:3px;margin-left:4px;vertical-align:1px}
+.t-ext{background:var(--ext-bg);color:var(--ext)}.t-mark{background:var(--line2);color:var(--muted)}
+.dochead{min-width:0;display:grid;grid-template-columns:1fr 2fr 1fr;border:1px solid #9aa6b2;background:#fff;margin-bottom:10px;font-size:12.5px}
+.dochead>div{padding:8px 10px;border-right:1px solid #9aa6b2}
+.dochead>div:last-child{border-right:0;text-align:right}
+.dochead .ttl{text-align:center;font-weight:700;letter-spacing:.03em}
+.dochead .ttl div:first-child{font-size:14px}
+.firma{margin:28px 0 8px auto;text-align:center;width:300px;font-size:12.5px;line-height:1.35}
+.firma .ln{border-top:1px solid #333;margin-bottom:4px}
+
+/* planilla anual */
+table.a{width:100%;border-collapse:collapse;background:#fff;font-size:12.5px}
+table.a th,table.a td{border:1px solid #9aa6b2;padding:5px 7px;vertical-align:top}
+table.a thead th{background:#dfe5eb;position:sticky;top:calc(var(--tophh,56px) + 38px);z-index:2;font-size:11.5px;letter-spacing:.04em}
+table.a tr.mes td{background:var(--line2);font-weight:700;letter-spacing:.06em;font-size:12px}
+table.a tr.r{cursor:pointer}
+table.a tr.r:hover td{background:#f6f9fc}
+table.a tr.past td{color:#8a95a1}
+table.a tr.cx td.act{text-decoration:line-through;color:#8a95a1}
+table.a td.f{white-space:nowrap;font-weight:600;width:1%}
+table.a td.t{width:150px;font-size:11.5px}
+
+/* control deptos */
+table.l{width:100%;border-collapse:collapse;background:#fff}
+table.l th,table.l td{border-bottom:1px solid var(--line2);padding:9px 10px;text-align:left;vertical-align:middle}
+table.l th{font-size:11.5px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;background:#fafbfc}
+.st{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:12.5px;padding:3px 9px;border-radius:99px}
+.st.ok{background:var(--ok-bg);color:var(--ok)}.st.pend{background:var(--warn-bg);color:var(--warn)}.st.sn{background:var(--line2);color:var(--muted)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:12px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+.kpi b{display:block;font-size:24px;font-variant-numeric:tabular-nums}
+.kpi span{font-size:12px;color:var(--muted)}
+.progress{height:8px;background:var(--line2);border-radius:99px;overflow:hidden;margin-top:6px}
+.progress i{display:block;height:100%;background:var(--ok)}
+
+/* modal */
+#modal{position:fixed;inset:0;background:rgba(10,20,32,.5);display:none;align-items:flex-start;justify-content:center;z-index:50;padding:30px 12px;overflow:auto}
+#modal.on{display:flex}
+.mbox{background:#fff;border-radius:12px;width:min(860px,100%);box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.mbox.sm{width:min(440px,100%)}
+.mhd{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line2)}
+.mhd h3{margin:0;font-size:16px;flex:1}
+.mbd{padding:16px 18px}
+.mft{display:flex;gap:8px;padding:12px 18px;border-top:1px solid var(--line2);align-items:center;flex-wrap:wrap}
+.mft .grow{flex:1}
+.x{border:0;background:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1}
+.fg{display:grid;grid-template-columns:repeat(12,1fr);gap:10px 12px}
+.f{display:flex;flex-direction:column;gap:3px}
+.f>label,.lbl{font-size:11.5px;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.f input,.f select,.f textarea{border:1px solid var(--line);border-radius:7px;padding:7px 9px;background:#fff;width:100%}
+.f input[type=radio],.f input[type=checkbox],.alc input{width:auto;padding:0;margin:3px 0 0;flex:none}
+.f input[readonly],.f textarea[readonly],.f select:disabled{background:#f6f7f9}
+.f textarea{resize:vertical;min-height:70px}
+.f .hint{font-size:11.5px;color:var(--muted)}
+.c12{grid-column:span 12}.c8{grid-column:span 8}.c6{grid-column:span 6}.c4{grid-column:span 4}.c3{grid-column:span 3}.c2{grid-column:span 2}
+.quick{display:flex;gap:4px;margin-top:3px;flex-wrap:wrap}
+.quick button{font-size:11.5px;padding:2px 7px;border:1px solid var(--line);background:#fafbfc;border-radius:5px;cursor:pointer}
+.alc{display:flex;gap:0;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.alc label{flex:1;display:flex;gap:10px;align-items:flex-start;padding:10px 12px;cursor:pointer;font-size:13px;line-height:1.3}
+.alc label+label{border-left:1px solid var(--line)}
+.alc input{margin-top:3px}
+.alc label.on.int{background:var(--int-bg);box-shadow:inset 0 -3px 0 var(--int)}
+.alc label.on.ext{background:var(--ext-bg);box-shadow:inset 0 -3px 0 var(--ext)}
+.alc b{display:block}
+.alc small{color:var(--muted)}
+.meta{font-size:12px;color:var(--muted)}
+.subtabs{display:flex;gap:4px;border-bottom:1px solid var(--line2);margin:-6px 0 14px}
+.subtabs button{border:0;background:none;padding:7px 12px;cursor:pointer;border-bottom:2px solid transparent;color:var(--muted)}
+.subtabs button.on{color:var(--ink);border-bottom-color:var(--navy2);font-weight:600}
+.hist{border-left:2px solid var(--line);margin-left:6px;padding-left:12px}
+.hist div{margin-bottom:10px;font-size:12.5px}
+.hist b{font-weight:600}
+.err{color:var(--bad);font-size:13px;min-height:18px}
+
+/* registro */
+table.log{width:100%;border-collapse:collapse;background:#fff;font-size:12.5px}
+table.log th,table.log td{border-bottom:1px solid var(--line2);padding:7px 9px;text-align:left;vertical-align:top}
+table.log th{font-size:11px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;background:#fafbfc;position:sticky;top:calc(var(--tophh,56px) + 38px)}
+.ac{font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase}
+.ac.crear{color:var(--ok)}.ac.editar{color:var(--int)}.ac.eliminar,.ac.anular{color:var(--bad)}.ac.confirmar{color:#5b3fb5}.ac.login{color:var(--muted)}
+
+/* admin */
+.adm{display:grid;grid-template-columns:200px 1fr;gap:16px}
+.adm nav{display:flex;flex-direction:column;gap:2px}
+.adm nav button{text-align:left;border:0;background:none;padding:8px 10px;border-radius:7px;cursor:pointer}
+.adm nav button.on{background:#fff;border:1px solid var(--line);font-weight:600}
+.adm h3{margin:0 0 12px;font-size:16px}
+.rowlist .ri{display:flex;gap:8px;margin-bottom:6px}
+.rowlist .ri input{border:1px solid var(--line);border-radius:7px;padding:6px 8px}
+
+.days{display:flex;gap:6px;flex-wrap:wrap}.day{display:flex;gap:5px;align-items:center;border:1px solid var(--line);border-radius:7px;padding:5px 9px;font-size:12.5px;cursor:pointer;text-transform:none;letter-spacing:0;color:var(--ink);font-weight:400}.day.me{background:var(--int-bg);border-color:#c5d9ef;font-weight:600}
+.connect{max-width:720px;margin:30px auto}.connect p{line-height:1.5}.btn.big{padding:10px 18px;font-size:15px}
+.f>label.chk,.chk{display:flex;gap:8px;align-items:center;font-size:13px;margin-top:6px;color:var(--ink);text-transform:none;letter-spacing:0;font-weight:400}
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:60;display:flex;flex-direction:column;gap:6px;align-items:center}
+#toast div{background:#1d2733;color:#fff;padding:9px 16px;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.25);font-size:13.5px}
+#toast div.e{background:var(--bad)}
+#printframe{position:fixed;width:0;height:0;border:0;right:0;bottom:0}
+
+@media (max-width:860px){
+  .fg .c8,.fg .c6,.fg .c4,.fg .c3,.fg .c2{grid-column:span 12}
+  .adm{grid-template-columns:1fr}.adm nav{flex-direction:row;overflow-x:auto}
+  .cal .d{min-height:80px}.chip{font-size:10.5px}
+  .weeknav .wk{min-width:0}
+  table.g{font-size:11.5px}
+  .dochead{grid-template-columns:1fr}.dochead>div{border-right:0;border-bottom:1px solid #9aa6b2;text-align:center !important}
+}
+@media print{ body>*:not(#printframe){display:none !important} }
+</style>
+</head>
+<body>
+<header id="top">
+  <div class="brand"><b id="brandShip">GUÍA SEMANAL</b><span id="brandSub">Oficina de Operaciones</span></div>
+  <div class="weeknav" title="Semana seleccionada">
+    <button id="wPrev" aria-label="Semana anterior">◀</button>
+    <div class="wk"><b id="wkLabel">SEMANA —</b><small id="wkRange"></small></div>
+    <button id="wNext" aria-label="Semana siguiente">▶</button>
+    <button id="wToday" title="Ir a la semana actual">Hoy</button>
+    <input type="date" id="wPick" style="width:26px;opacity:.0;position:absolute;pointer-events:none" tabindex="-1">
+  </div>
+  <div class="spacer"></div>
+  <span id="modeBadge" class="badge b-srv">—</span>
+  <button class="btn new" id="btnNew" style="display:none">＋ Nueva actividad</button>
+  <div class="who" id="who"></div>
+</header>
+<nav id="tabs"></nav>
+<div id="banner"></div>
+<main id="view"></main>
+<div id="modal" role="dialog" aria-modal="true"></div>
+<div id="toast"></div>
+<iframe id="printframe" title="impresión"></iframe>
+
+<script>
+"use strict";
+/* ═══════════════════════════════════════════════════════════════════
+   GUÍA SEMANAL — v2.1
+   Una sola página, sin dependencias externas ni servidor.
+   Se abre desde la carpeta compartida del buque (Edge o Chrome) y guarda ahí mismo,
+   en la subcarpeta datos/. Multiusuario con registro de cambios.
+   ═══════════════════════════════════════════════════════════════════ */
+const APP_VERSION = "2.1";
+const MES_C = ["ENE","FEB","MAR","ABR","MAY","JUN","JUL","AGO","SEP","OCT","NOV","DIC"];
+const MES_L = ["ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"];
+const DIA_L = ["DOMINGO","LUNES","MARTES","MIÉRCOLES","JUEVES","VIERNES","SÁBADO"];
+const DIA_C = ["DOM","LUN","MAR","MIÉ","JUE","VIE","SÁB"];
+
+/* ─────────────── utilidades */
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pad = n => String(n).padStart(2,"0");
+const iso = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const parse = s => { const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); };
+const addDays = (s, n) => { const d = parse(s); d.setDate(d.getDate()+n); return iso(d); };
+const todayIso = () => iso(new Date());
+const dow = s => parse(s).getDay();
+const daysBetween = (a, b) => Math.round((parse(b) - parse(a)) / 86400000);
+const monday = s => { const d = parse(s); const k = (d.getDay()+6)%7; d.setDate(d.getDate()-k); return iso(d); };
+function isoWeek(s){ const d = parse(s); d.setDate(d.getDate() + 3 - (d.getDay()+6)%7); const y = d.getFullYear();
+  const w1 = new Date(y,0,4); return { year:y, week: 1 + Math.round(((d - w1)/86400000 - 3 + (w1.getDay()+6)%7)/7) }; }
+function firstMonday(y){ const d = new Date(y,0,1); while (d.getDay()!==1) d.setDate(d.getDate()+1); return iso(d); }
+/* número de semana: por defecto la semana 1 comienza el primer lunes del año (criterio de la guía); opcional ISO 8601 */
+function weekNum(mon){
+  if ((S.config||{}).numeracionSemana === "iso") return isoWeek(mon);
+  let y = +mon.slice(0,4); if (mon < firstMonday(y)) y--;
+  return { year:y, week: 1 + Math.floor(daysBetween(firstMonday(y), mon)/7) };
+}
+const weekId = mon => mon;   /* identificador interno de la semana = fecha del lunes */
+const fmtC = s => { const d = parse(s); return `${pad(d.getDate())} ${MES_C[d.getMonth()]}`; };
+const fmtLong = s => { const d = parse(s); return `${DIA_L[d.getDay()]} ${pad(d.getDate())} DE ${MES_L[d.getMonth()]} ${d.getFullYear()}`; };
+const fmtTs = ts => ts ? `${ts.slice(8,10)}-${ts.slice(5,7)}-${ts.slice(0,4)} ${ts.slice(11,16)}` : "";
+const lastDay = (y, m) => new Date(y, m+1, 0).getDate();
+function lastBusiness(y, m){ let d = new Date(y, m+1, 0); while (d.getDay()===0 || d.getDay()===6) d.setDate(d.getDate()-1); return iso(d); }
+const uid = () => Math.random().toString(16).slice(2,8) + Date.now().toString(16).slice(-6);
+const store = { get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } },
+                set(k,v){ try { localStorage.setItem(k,v); return true; } catch(e){ return false; } },
+                del(k){ try { localStorage.removeItem(k); } catch(e){} } };
+function toast(msg, err){ const t = document.createElement("div"); if (err) t.className="e"; t.textContent = msg; $("#toast").appendChild(t); setTimeout(()=>t.remove(), err?6000:3000); }
+const isNumHora = h => /^\d{3,4}$/.test(String(h||"").trim());
+
+/* ─────────────── valores por defecto */
+const DEFAULT_DEPTOS = [
+  {codigo:"DETALL",nombre:"Detall / 2° Comandante"},{codigo:"OPERACIONES",nombre:"Operaciones"},{codigo:"ARMAMENTO",nombre:"Armamento"},
+  {codigo:"INGENIERÍA",nombre:"Ingeniería"},{codigo:"ABASTECIMIENTO",nombre:"Abastecimiento"},{codigo:"SANIDAD",nombre:"Sanidad"}];
+const DEFAULT_CONFIG = {
+  institucion:"", buque:"", oficina:"", referencia:"",
+  firmaNombre:"", firmaGrado:"", firmaCargo:"OFOPER", guardias:["BLANCA 2","AZUL 1","BLANCA 1","AZUL 2"], guardiaAncla:"2026-03-09", guardiaOverrides:{},
+  tipos:["COMISIONES","PERMANENTES","ROLES GUARDIA","CURSOS / SEMINARIOS","MSJ POR RESP.","NAVEGACIONES","REUNIONES / BRIEFING","EJERCICIOS","FAENAS","APOYOS","R.I.A.","OTROS"],
+  responsables:["CMDTE","2° CMDTE","OFOPER","OFNAV","OFTEL","OFINST","OFMAN","OFCRA","OFABAS","OFDIV","WEO","MEO","PWO U","PWO A","ODG","IDG","XO"],
+  lugares:["A BORDO","CUBIERTA DE VUELO","CÁMARA DE OFICIALES","CIC"], diaCierre:2, numeracionSemana:"primerLunes" };
+
+/* ═══════════════ ALMACENAMIENTO EN CARPETA COMPARTIDA ═══════════════
+   · Cada cambio se guarda como un archivo propio en  datos/cambios/  → dos personas guardando
+     al mismo tiempo nunca se sobrescriben.
+   · Cada PC relee la carpeta cada 10 s y aplica los cambios nuevos en orden.
+   · datos/estado.json = foto consolidada para abrir rápido.  datos/respaldos/ = copia diaria.
+   · No requiere servidor, red especial ni permisos de firewall: solo acceso a la carpeta.  */
+const IDB_NAME = "guiaSemanal", IDB_STORE = "handles";
+function idb(){ return new Promise((ok,ko)=>{ const q = indexedDB.open(IDB_NAME,1); q.onupgradeneeded = ()=> q.result.createObjectStore(IDB_STORE); q.onsuccess = ()=> ok(q.result); q.onerror = ()=> ko(q.error); }); }
+async function idbGet(k){ try { const db = await idb(); return await new Promise(ok=>{ const r = db.transaction(IDB_STORE).objectStore(IDB_STORE).get(k); r.onsuccess = ()=> ok(r.result); r.onerror = ()=> ok(null); }); } catch(e){ return null; } }
+async function idbSet(k, v){ try { const db = await idb(); await new Promise((ok,ko)=>{ const tx = db.transaction(IDB_STORE,"readwrite"); tx.objectStore(IDB_STORE).put(v,k); tx.oncomplete = ok; tx.onerror = ()=> ko(tx.error); }); } catch(e){} }
+const ses = { get(k){ try { return sessionStorage.getItem(k); } catch(e){ return null; } }, set(k,v){ try { sessionStorage.setItem(k,v); } catch(e){} }, del(k){ try { sessionStorage.removeItem(k); } catch(e){} } };
+
+class FolderAdapter {
+  constructor(root){ this.root = root; this.kind = "carpeta"; this.label = root.name; this.canWrite = false; }
+  /* devuelve false si la carpeta no tiene datos de la guía y create=false */
+  async init(create){
+    let datos = null;
+    try { datos = await this.root.getDirectoryHandle("datos"); } catch(e){}
+    if (!datos){ try { await this.root.getDirectoryHandle("cambios"); datos = this.root; } catch(e){} }   // eligió la subcarpeta "datos"
+    if (!datos){ if (!create) return false; datos = await this.root.getDirectoryHandle("datos", {create:true}); }
+    this.datos = datos;
+    try { this.cambios = await datos.getDirectoryHandle("cambios"); } catch(e){ this.cambios = await datos.getDirectoryHandle("cambios", {create:true}); }
+    try { this.canWrite = (await this.root.queryPermission({mode:"readwrite"})) === "granted"; } catch(e){ this.canWrite = true; }
+    return true;
+  }
+  async list(){ const out = []; for await (const [n,h] of this.cambios.entries()) if (h.kind === "file" && n.endsWith(".json")) out.push(n); return out; }
+  async _read(dir, name){ const f = await (await dir.getFileHandle(name)).getFile(); return JSON.parse(await f.text()); }
+  async _write(dir, name, obj){ const fh = await dir.getFileHandle(name, {create:true}); const w = await fh.createWritable(); await w.write(JSON.stringify(obj)); await w.close(); }
+  readChange(n){ return this._read(this.cambios, n); }
+  writeChange(n, o){ return this._write(this.cambios, n, o); }
+  async readSnap(){ try { return await this._read(this.datos, "estado.json"); } catch(e){ return null; } }
+  writeSnap(o){ return this._write(this.datos, "estado.json", o); }
+  async writeBackup(name, o, onlyIfMissing){
+    const d = await this.datos.getDirectoryHandle("respaldos", {create:true});
+    if (onlyIfMissing){ try { await d.getFileHandle(name); return false; } catch(e){} }
+    await this._write(d, name, o); return true;
+  }
+}
+class BrowserAdapter {   // alternativa: solo este navegador (sin compartir)
+  constructor(){ this.kind = "navegador"; this.label = "este navegador"; this.key = "guiaSemanal.cambios.v2"; this.canWrite = true; }
+  async init(){ return true; }
+  _all(){ try { return JSON.parse(store.get(this.key) || "{}"); } catch(e){ return {}; } }
+  async list(){ return Object.keys(this._all()); }
+  async readChange(n){ return this._all()[n]; }
+  async writeChange(n, o){ const a = this._all(); a[n] = o; if (!store.set(this.key, JSON.stringify(a))) throw new Error("El navegador no permitió guardar (almacenamiento lleno o bloqueado)"); }
+  async readSnap(){ return null; } async writeSnap(){} async writeBackup(){ return false; }
+}
+
+class DataStore {
+  constructor(adapter){
+    this.a = adapter; this.known = new Set(); this.d = this.empty(); this.audit = []; this.rev = 0; this.lastStamp = 0; this.snapCount = 0;
+    try { this.sesiones = JSON.parse(ses.get("guiaSemanal.sesiones") || "{}"); } catch(e){ this.sesiones = {}; }
+  }
+  empty(){ return {config:JSON.parse(JSON.stringify(DEFAULT_CONFIG)), deptos:DEFAULT_DEPTOS.slice(), events:{}, checkins:{}, semanas:{}, usuarios:{}, plantillas:{}}; }
+  async open(){
+    const snap = await this.a.readSnap();
+    if (snap && snap.v === 2 && snap.d){
+      this.d = Object.assign(this.empty(), snap.d); (snap.incluidos||[]).forEach(n=> this.known.add(n));
+      this.audit = snap.auditoria || []; this.snapCount = this.known.size;
+    }
+    await this.sync();
+    if (!Object.keys(this.d.usuarios).length && this.a.canWrite){
+      const salt = uid();
+      await this.commit({usuario:"sistema", accion:"crear", coll:"usuarios", docid:"admin", resumen:"Usuario inicial admin / admin (debe cambiar la clave)"},
+        [{t:"usr", v:{usuario:"admin", nombre:"Administrador", depto:"OPERACIONES", rol:"admin", activo:true, salt, hash:await DataStore.hash("admin",salt), debeCambiar:true}}]);
+    }
+    this.maintenance();
+  }
+  static async hash(pw, salt){
+    const txt = salt + "|" + pw;
+    if (window.crypto && crypto.subtle){
+      let buf = new TextEncoder().encode(txt);
+      for (let i=0;i<500;i++) buf = new Uint8Array(await crypto.subtle.digest("SHA-256", buf));
+      return [...buf].map(b=>b.toString(16).padStart(2,"0")).join("");
+    }
+    let h1 = 0x811c9dc5, h2 = 0x1234567; for (let r=0;r<2000;r++) for (let i=0;i<txt.length;i++){ h1 = Math.imul(h1 ^ txt.charCodeAt(i), 16777619); h2 = Math.imul(h2 + txt.charCodeAt(i), 2654435761); }
+    return (h1>>>0).toString(16) + (h2>>>0).toString(16);
+  }
+  apply(op){
+    const D = this.d;
+    switch(op.t){
+      case "ev": D.events[op.v.id] = op.v; break;          case "evdel": delete D.events[op.id]; break;
+      case "ck": D.checkins[op.v.id] = op.v; break;        case "ckdel": delete D.checkins[op.id]; break;
+      case "cfg": D.config = Object.assign({}, D.config, op.v); break;
+      case "dep": D.deptos = op.v; break;
+      case "sem": D.semanas[op.v.id] = op.v; break;
+      case "usr": D.usuarios[op.v.usuario] = op.v; break;  case "usrdel": delete D.usuarios[op.id]; break;
+      case "pl": D.plantillas[op.v.id] = op.v; break;      case "pldel": delete D.plantillas[op.id]; break;
+      case "reset": D.events = {}; D.checkins = {}; D.semanas = {}; D.plantillas = {}; break;
+    }
+  }
+  /* lee de la carpeta los cambios que aún no conoce; devuelve true si hubo novedades */
+  async sync(){
+    const names = (await this.a.list()).filter(n=> !this.known.has(n)).sort();
+    if (!names.length) return false;
+    for (const n of names){
+      let c; try { c = await this.a.readChange(n); } catch(e){ continue; }   // archivo aún escribiéndose → próximo ciclo
+      this.known.add(n);
+      if (!c || !Array.isArray(c.ops)) continue;
+      c.ops.forEach(op=> this.apply(op));
+      this.audit.push({n, ts:c.ts, usuario:c.usuario, accion:c.accion, coll:c.coll, docid:c.docid, resumen:c.resumen});
+    }
+    this.audit.sort((a,b)=> a.n < b.n ? -1 : 1); this.rev++;
+    return true;
+  }
+  now(){ const d = new Date(); return `${iso(d)}T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; }
+  async commit(meta, ops){
+    if (!this.a.canWrite) throw new Error("Esta carpeta está abierta en solo lectura. Reconecte la carpeta con permiso de edición.");
+    let stamp = Date.now(); if (stamp <= this.lastStamp) stamp = this.lastStamp + 1; this.lastStamp = stamp;
+    const ts = this.now(), n = `${String(stamp).padStart(14,"0")}_${String(meta.usuario||"x").replace(/[^a-z0-9]/gi,"").slice(0,20)}_${uid().slice(0,6)}.json`;
+    try { await this.a.writeChange(n, Object.assign({v:2, ts}, meta, {ops})); }
+    catch(e){ throw new Error("No se pudo guardar en la carpeta compartida. Verifique que la carpeta está disponible y que tiene permiso de escritura. (" + (e.message || e.name) + ")"); }
+    ops.forEach(op=> this.apply(op)); this.known.add(n);
+    this.audit.push({n, ts, usuario:meta.usuario, accion:meta.accion, coll:meta.coll, docid:meta.docid, resumen:meta.resumen}); this.rev++;
+  }
+  snapshot(){ return {v:2, generado:this.now(), incluidos:[...this.known].sort(), d:this.d, auditoria:this.audit}; }
+  /* foto consolidada cada 40 cambios + respaldo diario (lo hace el primer PC que abra la guía en el día) */
+  async maintenance(){
+    if (!this.a.canWrite || this.a.kind !== "carpeta") return;
+    try { if (this.known.size - this.snapCount >= 40){ await this.a.writeSnap(this.snapshot()); this.snapCount = this.known.size; } } catch(e){}
+    try { await this.a.writeBackup(`respaldo_${todayIso()}.json`, this.backupObj("automático"), true); } catch(e){}
+  }
+  backupObj(por){ const D = this.d; return {formato:"guia-semanal-respaldo", version:2, generado:this.now(), generadoPor:por, config:D.config, deptos:D.deptos,
+      events:Object.values(D.events), checkins:Object.values(D.checkins), semanas:Object.values(D.semanas), usuarios:Object.values(D.usuarios), plantillas:Object.values(D.plantillas), auditoria:this.audit}; }
+  pub(u){ const {usuario,nombre,depto,rol,activo,debeCambiar} = u; return {usuario,nombre,depto,rol,activo,debeCambiar}; }
+  saveSes(){ ses.set("guiaSemanal.sesiones", JSON.stringify(this.sesiones)); }
+
+  async handle(method, path, body, token){
+    const [pp, qs] = path.split("?"); const q = new URLSearchParams(qs||"");
+    const parts = pp.replace(/^\/api\//,"").split("/"); const name = parts[0], arg = parts.slice(1).join("/") ? decodeURIComponent(parts.slice(1).join("/")) : null;
+    const ok = data => ({status:200, data}), err = (s,m) => ({status:s, data:{error:m}});
+    const isMut = method !== "GET" && !["login","logout"].includes(name);
+    if (isMut){ try { await this.sync(); } catch(e){ return err(503, "La carpeta compartida no está disponible: " + (e.message||e.name)); } }
+    const D = this.d, sx = this.sesiones[token];
+    const user = sx && sx.exp > Date.now() && D.usuarios[sx.usuario] && D.usuarios[sx.usuario].activo !== false ? D.usuarios[sx.usuario] : null;
+    const need = admin => !user ? err(401,"Debe iniciar sesión") : (admin && user.rol !== "admin" ? err(403,"Solo el administrador puede hacer esto") : null);
+    const U = user && user.usuario, k = method + " " + name;
+    const C = (accion, coll, docid, resumen, ops) => this.commit({usuario:U, accion, coll, docid, resumen}, ops);
+    try {
+      switch(k){
+      case "GET estado": return ok({modo:this.a.kind, rev:this.rev, config:D.config, deptos:D.deptos, events:Object.values(D.events), checkins:Object.values(D.checkins),
+          semanas:Object.values(D.semanas), plantillas:Object.values(D.plantillas), usuarios:Object.values(D.usuarios).map(u=>this.pub(u))});
+      case "GET auditoria": { let a = this.audit.slice().reverse(); if (q.get("doc")) a = a.filter(x=> x.docid === q.get("doc")); return ok(a.slice(0, +(q.get("limite")||1000))); }
+      case "POST login": { const u = D.usuarios[(body.usuario||"").trim().toLowerCase()];
+        if (!u || u.activo === false || await DataStore.hash(body.clave||"", u.salt) !== u.hash) return err(401,"Usuario o clave incorrectos");
+        const t = uid() + uid(); this.sesiones[t] = {usuario:u.usuario, exp:Date.now() + 12*3600e3}; this.saveSes(); return ok({token:t, usuario:this.pub(u)}); }
+      case "POST logout": delete this.sesiones[token]; this.saveSes(); return ok({ok:true});
+      case "GET yo": return ok({usuario: user ? this.pub(user) : null});
+      case "PUT clave": { const e = need(); if (e) return e;
+        if (await DataStore.hash(body.actual||"", user.salt) !== user.hash) return err(400,"La clave actual no es correcta");
+        if ((body.nueva||"").length < 6) return err(400,"La clave nueva debe tener al menos 6 caracteres");
+        const nu = Object.assign({}, user, {salt:uid()}); nu.hash = await DataStore.hash(body.nueva, nu.salt); nu.debeCambiar = false;
+        await C("editar","usuarios",U,"Cambió su clave",[{t:"usr", v:nu}]); return ok({ok:true, usuario:this.pub(nu)}); }
+
+      case "POST eventos": { const e = need(); if (e) return e; const ev = cleanEvent(body);
+        if (user.rol !== "admin") ev.depto = user.depto; ev.id = uid(); ev.creado = ev.modificado = this.now(); ev.creadoPor = ev.modificadoPor = U;
+        await C("crear","events",ev.id,`${ev.fechaInicio} · ${ev.actividad}`,[{t:"ev", v:ev}]); return ok({evento:ev}); }
+      case "PUT eventos": { const e = need(); if (e) return e; const old = D.events[arg]; if (!old) return err(404,"El evento no existe (puede haber sido eliminado)");
+        if (user.rol !== "admin" && old.depto !== user.depto) return err(403,`Este evento pertenece al depto. ${old.depto}; solo ese depto o el administrador pueden editarlo`);
+        if (body._modificado && body._modificado !== old.modificado) return err(409,`${old.modificadoPor} modificó este evento a las ${String(old.modificado).slice(11,16)}. Cierre y vuelva a abrirlo.`);
+        const ev = cleanEvent(body, old); if (user.rol !== "admin") ev.depto = user.depto; ev.modificado = this.now(); ev.modificadoPor = U;
+        await C("editar","events",arg,`${ev.actividad} — ${diffSummary(old,ev) || "sin cambios"}`,[{t:"ev", v:ev}]); return ok({evento:ev}); }
+      case "DELETE eventos": { const e = need(); if (e) return e; const old = D.events[arg]; if (!old) return err(404,"El evento no existe");
+        if (user.rol !== "admin" && old.depto !== user.depto) return err(403,"No puede eliminar eventos de otro departamento");
+        await C("eliminar","events",arg,`${old.fechaInicio} · ${old.actividad}`,[{t:"evdel", id:arg}]); return ok({ok:true}); }
+
+      case "POST plantillas": { const e = need(); if (e) return e; const old = body.id ? D.plantillas[body.id] : null;
+        if (old && user.rol !== "admin" && old.depto !== user.depto) return err(403,"Esa actividad guardada pertenece a otro departamento");
+        const p = cleanTemplate(body, old); if (user.rol !== "admin") p.depto = user.depto;
+        p.id = old ? old.id : uid(); p.modificado = this.now(); p.modificadoPor = U; if (!old){ p.creado = p.modificado; p.creadoPor = U; }
+        await C(old?"editar":"crear","plantillas",p.id,`Actividad guardada: ${p.actividad}`,[{t:"pl", v:p}]); return ok({plantilla:p}); }
+      case "DELETE plantillas": { const e = need(); if (e) return e; const old = D.plantillas[arg]; if (!old) return err(404,"No existe");
+        if (user.rol !== "admin" && old.depto !== user.depto) return err(403,"Esa actividad guardada pertenece a otro departamento");
+        await C("eliminar","plantillas",arg,`Actividad guardada: ${old.actividad}`,[{t:"pldel", id:arg}]); return ok({ok:true}); }
+
+      case "POST checkins": { const e = need(); if (e) return e; if (user.rol !== "admin" && body.depto !== user.depto) return err(403,"Solo puede registrar el ingreso de su propio departamento");
+        const id = `${body.semana}|${body.depto}`;
+        const c = {id, semana:body.semana, depto:body.depto, usuario:U, nombre:user.nombre, ts:this.now(), nota:(body.nota||"").trim(), sinNovedad:!!body.sinNovedad};
+        await C("confirmar","checkins",id,`${c.depto} confirmó ingreso de requerimientos semana ${body.etiqueta||c.semana}${c.sinNovedad?" (sin novedad)":""}`,[{t:"ck", v:c}]); return ok({checkin:c}); }
+      case "DELETE checkins": { const e = need(); if (e) return e; const old = D.checkins[arg]; if (!old) return err(404,"No existe");
+        if (user.rol !== "admin" && old.depto !== user.depto) return err(403,"No autorizado");
+        await C("anular","checkins",arg,`Anuló confirmación ${old.depto} semana ${old.semana}`,[{t:"ckdel", id:arg}]); return ok({ok:true}); }
+
+      case "PUT config": { const e = need(true); if (e) return e;
+        const ch = Object.keys(body).filter(x=> JSON.stringify(D.config[x]) !== JSON.stringify(body[x]));
+        await C("editar","config","main","Configuración: " + (ch.join(", ") || "sin cambios"),[{t:"cfg", v:body}]); return ok({config:D.config}); }
+      case "PUT deptos": { const e = need(true); if (e) return e;
+        const l = (body.lista||[]).filter(x=>x.codigo).map(x=>({codigo:String(x.codigo).trim().toUpperCase(), nombre:String(x.nombre||"").trim()}));
+        if (!l.length) return err(400,"Debe existir al menos un departamento");
+        await C("editar","deptos","lista","Departamentos: " + l.map(x=>x.codigo).join(", "),[{t:"dep", v:l}]); return ok({deptos:l}); }
+      case "PUT semanas": { const e = need(true); if (e) return e;
+        const s = Object.assign({id:arg}, D.semanas[arg]||{}, body, {id:arg, modificado:this.now(), modificadoPor:U});
+        await C("editar","semanas",arg,`Semana ${arg}: versión ${s.version||""}${s.publicada?" — PUBLICADA":""}`,[{t:"sem", v:s}]); return ok({semana:s}); }
+
+      case "GET usuarios": { const e = need(true); if (e) return e; return ok(Object.values(D.usuarios).map(u=>this.pub(u))); }
+      case "POST usuarios": { const e = need(true); if (e) return e; const n = (body.usuario||"").trim().toLowerCase();
+        if (!n || /\s/.test(n)) return err(400,"Nombre de usuario inválido (sin espacios)"); if (D.usuarios[n]) return err(400,"Ese usuario ya existe");
+        if ((body.clave||"").length < 6) return err(400,"La clave debe tener al menos 6 caracteres");
+        const salt = uid(), nu = {usuario:n, nombre:(body.nombre||n).trim(), depto:body.depto||"", rol:body.rol==="admin"?"admin":"editor", activo:true, salt, hash:await DataStore.hash(body.clave,salt), debeCambiar:true};
+        await C("crear","usuarios",n,`Creó usuario ${n} (${nu.rol}, ${nu.depto})`,[{t:"usr", v:nu}]); return ok({usuario:this.pub(nu)}); }
+      case "PUT usuarios": { const e = need(true); if (e) return e; const u = D.usuarios[arg]; if (!u) return err(404,"Usuario no existe");
+        const nu = Object.assign({}, u); ["nombre","depto"].forEach(x=>{ if (x in body) nu[x] = body[x]; });
+        if ("rol" in body) nu.rol = body.rol === "admin" ? "admin" : "editor"; if ("activo" in body) nu.activo = !!body.activo;
+        const ch = ["nombre","depto","rol","activo"].filter(x=> u[x] !== nu[x]);
+        if (body.clave){ if (body.clave.length < 6) return err(400,"La clave debe tener al menos 6 caracteres"); nu.salt = uid(); nu.hash = await DataStore.hash(body.clave, nu.salt); nu.debeCambiar = true; ch.push("clave reiniciada"); }
+        if (arg === U && (nu.rol !== "admin" || !nu.activo)) return err(400,"No puede quitarse a sí mismo el rol de administrador");
+        await C("editar","usuarios",arg,`Usuario ${arg}: ${ch.join(", ") || "sin cambios"}`,[{t:"usr", v:nu}]); return ok({usuario:this.pub(nu)}); }
+      case "DELETE usuarios": { const e = need(true); if (e) return e; if (arg === U) return err(400,"No puede eliminarse a sí mismo");
+        await C("eliminar","usuarios",arg,`Eliminó usuario ${arg}`,[{t:"usrdel", id:arg}]); return ok({ok:true}); }
+
+      case "GET respaldo": { const e = need(true); if (e) return e; return ok(this.backupObj(U)); }
+      case "POST respaldar": { const e = need(true); if (e) return e; if (this.a.kind !== "carpeta") return err(400,"Sin carpeta conectada: use «Descargar respaldo»");
+        const nm = `respaldo_${todayIso()}_${pad(new Date().getHours())}${pad(new Date().getMinutes())}_manual.json`; await this.a.writeBackup(nm, this.backupObj(U), false); return ok({archivo:nm}); }
+      case "POST restaurar": { const e = need(true); if (e) return e; const data = body.datos || {}, modo = body.modo || "fusionar";
+        if (data.formato !== "guia-semanal-respaldo") return err(400,"El archivo no es un respaldo válido de la Guía Semanal");
+        if (this.a.kind === "carpeta"){ try { await this.a.writeBackup(`respaldo_${todayIso()}_antes-de-restaurar_${uid().slice(0,4)}.json`, this.backupObj(U), false); } catch(x){} }
+        const ops = [];
+        if (modo === "reemplazar"){ ops.push({t:"reset"}); if (data.config) ops.push({t:"cfg", v:data.config}); if (data.deptos) ops.push({t:"dep", v:data.deptos});
+          (data.usuarios||[]).forEach(u=>{ if (u.usuario && u.hash) ops.push({t:"usr", v:u}); }); }
+        let n = 0; (data.events||[]).forEach(ev=>{ if (ev.id && ev.fechaInicio){ ops.push({t:"ev", v:ev}); n++; } });
+        (data.checkins||[]).forEach(c=>{ if (c.id) ops.push({t:"ck", v:c}); }); (data.semanas||[]).forEach(s=>{ if (s.id) ops.push({t:"sem", v:s}); });
+        let np = 0; (data.plantillas||[]).forEach(p=>{ if (p.id && p.actividad){ ops.push({t:"pl", v:p}); np++; } });
+        if (data.guardias) ops.push({t:"cfg", v:{guardiaOverrides:Object.assign({}, D.config.guardiaOverrides||{}, data.guardias)}});
+        await C("restaurar","sistema","",`Restauración (${modo}) — ${n} eventos y ${np} actividades guardadas desde «${data.origen||data.generado||"archivo"}»`, ops);
+        return ok({ok:true, eventos:n, plantillas:np}); }
+      }
+      return err(404,"Ruta no válida");
+    } catch(ex){ return err(400, ex.message || String(ex)); }
+  }
+}
+
+/* reglas de eventos */
+const EVENT_FIELDS = ["ev","fechaInicio","fechaFin","horaInicio","horaFin","actividad","responsable","lugar","participantes","observaciones","tipo","alcance","depto","mostrar","enAnual","estado","recurrencia","orden"];
+const FIELD_LABEL = {fechaInicio:"fecha inicio",fechaFin:"fecha término",horaInicio:"hora inicio",horaFin:"hora término",enAnual:"en planilla anual",mostrar:"mostrar en guía",alcance:"interno/externo"};
+function cleanEvent(src, old){
+  const ev = Object.assign({}, old||{}); EVENT_FIELDS.forEach(k=>{ if (k in src) ev[k] = src[k]; });
+  ["actividad","responsable","lugar","participantes","observaciones","tipo","horaInicio","horaFin","ev"].forEach(k=> ev[k] = String(ev[k]??"").trim());
+  ev.actividad = ev.actividad.toUpperCase();
+  if (!ev.fechaInicio) throw new Error("Falta la fecha de inicio");
+  if (!ev.actividad) throw new Error("Falta la actividad");
+  ev.fechaFin = ev.fechaFin || ev.fechaInicio; if (ev.fechaFin < ev.fechaInicio) throw new Error("La fecha de término es anterior a la de inicio");
+  ev.alcance = ev.alcance==="EXT" ? "EXT" : "INT"; ev.mostrar = ["diario","habiles","extremos","anual"].includes(ev.mostrar) ? ev.mostrar : "diario";
+  ev.estado = ev.estado==="cancelado" ? "cancelado" : "activo"; ev.enAnual = !!ev.enAnual; ev.ev = ev.ev || "PT";
+  if (!ev.recurrencia || typeof ev.recurrencia !== "object") ev.recurrencia = {tipo:"ninguna"};
+  return ev;
+}
+const TPL_FIELDS = ["actividad","horaInicio","horaFin","responsable","lugar","participantes","observaciones","alcance","mostrar","enAnual","depto","ev"];
+function cleanTemplate(src, old){
+  const p = Object.assign({}, old||{}); TPL_FIELDS.forEach(k=>{ if (k in src) p[k] = src[k]; });
+  ["actividad","horaInicio","horaFin","responsable","lugar","participantes","observaciones","ev"].forEach(k=> p[k] = String(p[k]??"").trim().toUpperCase());
+  if (!p.actividad) throw new Error("Falta el nombre de la actividad");
+  p.alcance = p.alcance === "EXT" ? "EXT" : "INT"; p.mostrar = ["diario","habiles","extremos","anual"].includes(p.mostrar) ? p.mostrar : "diario"; p.enAnual = !!p.enAnual; p.ev = p.ev || "PT";
+  return p;
+}
+function diffSummary(a, b){
+  const n = v => (v===undefined||v===null) ? "" : v;
+  return EVENT_FIELDS.filter(k=>JSON.stringify(n(a[k]))!==JSON.stringify(n(b[k]))).map(k=>{
+    const va=a[k], vb=b[k]; return (typeof va==="object"||typeof vb==="object") ? (FIELD_LABEL[k]||k) : `${FIELD_LABEL[k]||k}: «${va||"—"}» → «${vb||"—"}»`; }).join("; ");
+}
+
+/* ═══════════════ cliente ═══════════════ */
+let MODE = "carpeta", STORE = null, TOKEN = ses.get("guiaSemanal.token") || "";
+let S = {config:DEFAULT_CONFIG, deptos:DEFAULT_DEPTOS, events:[], checkins:[], semanas:[], usuarios:[], plantillas:[], rev:0};
+let ME = null;
+let UI = { tab: store.get("guiaSemanal.tab") || "guia", week: monday(todayIso()), calMonth: null, fDepto:"", fAlc:"", fTipo:"", q:"", ocultarPasados:false, admTab:"general", logQ:"", plQ:"" };
+
+class ApiError extends Error { constructor(m, s){ super(m); this.status = s; } }
+async function req(method, path, body){
+  if (!STORE) throw new ApiError("No hay carpeta de datos conectada", 0);
+  const r = await STORE.handle(method, path, body||{}, TOKEN);
+  if (r.status === 503) setConn(false); else setConn(true);
+  if (r.status >= 400){
+    if (r.status === 401 && ME && path !== "/api/login"){ ME = null; TOKEN = ""; ses.del("guiaSemanal.token"); renderWho(); toast("La sesión expiró. Ingrese nuevamente.", true); }
+    throw new ApiError(r.data.error, r.status);
+  }
+  return r.data;
+}
+let connOk = true;
+function setConn(ok){ if (ok === connOk) return; connOk = ok; renderMode(); }
+
+async function loadState(){
+  const st = await req("GET", "/api/estado");
+  S = st; S.config = Object.assign({}, DEFAULT_CONFIG, st.config||{}); S.deptos = st.deptos && st.deptos.length ? st.deptos : DEFAULT_DEPTOS;
+  if (TOKEN){ const y = await req("GET","/api/yo").catch(()=>({usuario:null})); ME = y.usuario; if (!ME){ TOKEN = ""; ses.del("guiaSemanal.token"); } }
+}
+async function refresh(){ try { await loadState(); render(); } catch(e){ toast(e.message, true); } }
+
+/* ─── conexión a la carpeta ─── */
+async function boot(){
+  bindTop();
+  const h = await idbGet("carpeta");
+  if (h && h.kind === "directory"){
+    let perm = "prompt"; try { perm = await h.queryPermission({mode:"readwrite"}); } catch(e){}
+    if (perm === "granted") return openFolder(h);
+    return showConnect(h);
+  }
+  if (store.get("guiaSemanal.modo") === "navegador") return openBrowserMode();
+  showConnect(null);
+}
+function showConnect(prev, msg){
+  STORE = null; $(".weeknav").style.visibility = "hidden"; $("#tabs").innerHTML = ""; $("#banner").style.display = "none"; $("#btnNew").style.display = "none"; $("#who").innerHTML = "";
+  $("#modeBadge").className = "badge b-off"; $("#modeBadge").textContent = "Sin carpeta";
+  const can = typeof window.showDirectoryPicker === "function";
+  $("#view").innerHTML = `<div class="card pad connect">
+    <h2 style="margin-top:0">Conectar la carpeta de la Guía Semanal</h2>
+    ${msg ? `<p class="err">${esc(msg)}</p>` : ""}
+    ${can ? `<p>Los datos se guardan en la carpeta compartida donde está este archivo. El navegador necesita su autorización para leer y guardar ahí.</p>
+      ${prev ? `<p><button class="btn pri big" id="cRe">Reconectar carpeta «${esc(prev.name)}»</button></p><p class="small muted">Un clic basta; el navegador puede pedir confirmar «Permitir» (elija «Permitir en cada visita» si aparece).</p>` : ""}
+      <p><button class="btn ${prev?"":"pri big"}" id="cPick">${prev ? "Elegir otra carpeta…" : "Seleccionar carpeta…"}</button></p>
+      <ol class="small muted"><li>En la ventana que se abre, busque la carpeta compartida de la Guía Semanal (la misma donde está este archivo).</li>
+      <li>Selecciónela y presione <b>Seleccionar carpeta</b> / <b>Ver archivos</b>.</li><li>Cuando el navegador lo pregunte, permita <b>editar</b> archivos.</li></ol>`
+    : `<p>Este dispositivo no permite conectar carpetas compartidas (iPhone, iPad o Firefox). Puede usar la guía <b>solo en este dispositivo</b>: los datos quedan guardados aquí y no se comparten con la carpeta del buque.</p>
+       <p><button class="btn pri big" id="cLocal2">Usar en este dispositivo</button></p>
+       <p class="small muted">En iPhone: después toque Compartir → «Agregar a inicio» para abrirla como aplicación. Descargue respaldos con frecuencia (Administración → Respaldo).</p>`}
+    <hr style="border:0;border-top:1px solid var(--line2);margin:18px 0">
+    <p class="small muted">Sin carpeta compartida (para probar o trabajar fuera del buque): <button class="btn sm" id="cLocal">Usar solo en este navegador</button></p></div>`;
+  const re = $("#cRe"); if (re) re.onclick = async ()=>{ let p = "denied"; try { p = await prev.requestPermission({mode:"readwrite"}); } catch(e){}
+    if (p === "granted") openFolder(prev); else showConnect(prev, "No se otorgó el permiso. Vuelva a intentar y elija «Permitir»."); };
+  const pk = $("#cPick"); if (pk) pk.onclick = async ()=>{ let h; try { h = await window.showDirectoryPicker({id:"guiaSemanal", mode:"readwrite"}); } catch(e){ return; } openFolder(h, true); };
+  const l2 = $("#cLocal2"); if (l2) l2.onclick = ()=>{ store.set("guiaSemanal.modo","navegador"); openBrowserMode(); };
+  $("#cLocal").onclick = ()=>{ if (confirm("En este modo los datos quedan solo en este navegador y nadie más los verá. ¿Continuar?")){ store.set("guiaSemanal.modo","navegador"); openBrowserMode(); } };
+}
+async function openFolder(h, picked){
+  const ad = new FolderAdapter(h);
+  try {
+    if (!(await ad.init(false))){
+      if (!picked || !confirm(`La carpeta «${h.name}» no contiene datos de la Guía Semanal.\n\n¿Crear aquí una base de datos nueva?\n(Si los datos ya existen en otra carpeta, presione Cancelar y elija esa.)`)) return showConnect(h);
+      await ad.init(true);
+    }
+  } catch(e){ return showConnect(h, "No se pudo abrir la carpeta: " + (e.message||e.name)); }
+  await idbSet("carpeta", h); store.del("guiaSemanal.modo");
+  return startStore(ad);
+}
+function openBrowserMode(){ return startStore(new BrowserAdapter()); }
+let pollTimer = null;
+async function startStore(ad){
+  $("#view").innerHTML = `<div class="empty">Leyendo datos…</div>`;
+  STORE = new DataStore(ad); MODE = ad.kind;
+  try { await STORE.open(); await loadState(); } catch(e){ return showConnect(ad.root||null, "Error al leer los datos: " + (e.message||e.name)); }
+  render();
+  if (ME && ME.debeCambiar) openPassword(true);
+  clearInterval(pollTimer); pollTimer = setInterval(poll, 10000);
+  window.onfocus = poll; setInterval(()=> STORE && STORE.maintenance(), 30*60e3);
+}
+let polling = false;
+async function poll(){
+  if (!STORE || polling) return; polling = true;
+  try { const ch = await STORE.sync(); setConn(true); if (ch || STORE.rev !== S.rev){ await loadState(); if (!$("#modal").classList.contains("on")) render(true); else renderTabs(); } }
+  catch(e){ setConn(false); }
+  polling = false;
+}
+
+/* ═══════════════ lógica de calendario/guía ═══════════════ */
+const deptoName = c => (S.deptos.find(d=>d.codigo===c)||{}).nombre || c || "—";
+function guardiaFor(s){
+  const o = (S.config.guardiaOverrides||{})[s]; if (o) return o;
+  const g = S.config.guardias||[]; if (!g.length || !S.config.guardiaAncla) return "";
+  const n = daysBetween(S.config.guardiaAncla, s); return g[((n % g.length) + g.length) % g.length];
+}
+function recurMatch(r, s){
+  const d = parse(s), wd = d.getDay();
+  switch(r.tipo){
+    case "diaria": return true;
+    case "habiles": return wd>=1 && wd<=5;
+    case "semanal": return (r.dias||[]).includes(wd);
+    case "mensual": return d.getDate() === Math.min(+r.dia||1, lastDay(d.getFullYear(), d.getMonth()));
+    case "ultimoHabil": return s === lastBusiness(d.getFullYear(), d.getMonth());
+  }
+  return false;
+}
+function recurText(r){
+  switch(r && r.tipo){
+    case "diaria": return "TODOS LOS DÍAS"; case "habiles": return "DE LUNES A VIERNES";
+    case "semanal": return "CADA " + (r.dias||[]).slice().sort((a,b)=>((a+6)%7)-((b+6)%7)).map(i=>DIA_L[i]).join(", ");
+    case "mensual": return `DÍA ${r.dia} DE CADA MES`; case "ultimoHabil": return "ÚLTIMO DÍA HÁBIL DE CADA MES";
+  }
+  return "";
+}
+/* fechas en que un evento aparece entre from..to.  forGuide=true excluye los "solo planilla anual". */
+function occurrences(ev, from, to, forGuide){
+  const fi = ev.fechaInicio, ff = ev.fechaFin || fi;
+  const a = fi > from ? fi : from, b = ff < to ? ff : to; if (a > b) return [];
+  const r = ev.recurrencia || {tipo:"ninguna"}; const out = [];
+  if (forGuide && ev.mostrar === "anual") return [];
+  if (r.tipo && r.tipo !== "ninguna"){ for (let s=a; s<=b; s=addDays(s,1)) if (recurMatch(r,s)) out.push({fecha:s, marca:""}); return out; }
+  if (ev.mostrar === "diario" || ev.mostrar === "habiles"){ for (let s=a; s<=b; s=addDays(s,1)){ const wd = dow(s); if (ev.mostrar==="habiles" && (wd===0||wd===6)) continue; out.push({fecha:s, marca:""}); } return out; }
+  if (fi >= from && fi <= to) out.push({fecha:fi, marca: fi!==ff ? "INICIO" : ""});
+  if (ff !== fi && ff >= from && ff <= to) out.push({fecha:ff, marca:"TÉRMINO"});
+  return out;
+}
+function horaKey(ev){
+  const h = String(ev.horaInicio||"").trim().toUpperCase();
+  if (isNumHora(h)){ const v = h.padStart(4,"0"); return 100 + (+v.slice(0,2))*60 + (+v.slice(2)); }
+  if (h === "AM" && String(ev.horaFin).toUpperCase() === "PM") return 0;
+  if (h === "AM") return 1; if (h === "PM") return 2; return 3;
+}
+function passFilters(ev){
+  if (UI.fDepto && ev.depto !== UI.fDepto) return false;
+  if (UI.fAlc && ev.alcance !== UI.fAlc) return false;
+  if (UI.fTipo && ev.tipo !== UI.fTipo) return false;
+  if (UI.q){ const q = UI.q.toUpperCase(); if (![ev.actividad,ev.responsable,ev.lugar,ev.participantes,ev.observaciones,ev.tipo].join(" ").toUpperCase().includes(q)) return false; }
+  return true;
+}
+/* devuelve [{fecha, items:[{ev, marca, num}]}] para la semana */
+function weekGuide(mon, onlyExt, filt){
+  const sun = addDays(mon, 6); const days = [];
+  for (let i=0;i<7;i++) days.push({fecha:addDays(mon,i), items:[]});
+  S.events.forEach(ev=>{
+    if (onlyExt && ev.alcance !== "EXT") return;
+    if (filt && !passFilters(ev)) return;
+    occurrences(ev, mon, sun, true).forEach(o=>{ days[daysBetween(mon,o.fecha)].items.push({ev, marca:o.marca}); });
+  });
+  days.forEach(d=>{
+    d.items.sort((x,y)=> (horaKey(x.ev)-horaKey(y.ev)) || ((+x.ev.orden||0)-(+y.ev.orden||0)) || String(x.ev.creado).localeCompare(String(y.ev.creado)));
+    const dd = parse(d.fecha).getDate(); d.items.forEach((it,i)=> it.num = `${pad(dd)}-${pad(i+1)}`);
+  });
+  return days;
+}
+const canEdit = ev => !!ME && (ME.rol === "admin" || !ev || ev.depto === ME.depto);
+const obsLines = ev => String(ev.observaciones||"").split("\n").map(s=>s.trim()).filter(Boolean);
+function horaHTML(ev){ const a = esc(ev.horaInicio||""), b = esc(ev.horaFin||""); return b ? `${a}<br>${b}` : a; }
+
+/* ═══════════════ barra superior y pestañas ═══════════════ */
+const TABS = [
+  {id:"guia", t:"Guía semanal interna"},
+  {id:"mando", t:"Guía semanal externa"},
+  {id:"cal", t:"Calendario"},
+  {id:"anual", t:"Planilla anual"},
+  {id:"plant", t:"Actividades guardadas"},
+  {id:"deptos", t:"Control de ingreso"},
+  {id:"log", t:"Registro de cambios"},
+  {id:"admin", t:"Administración", admin:true},
+];
+function bindTop(){
+  $("#wPrev").onclick = ()=>{ UI.week = addDays(UI.week,-7); render(); };
+  $("#wNext").onclick = ()=>{ UI.week = addDays(UI.week,7); render(); };
+  $("#wToday").onclick = ()=>{ UI.week = monday(todayIso()); UI.calMonth = null; render(); };
+  $(".wk").onclick = ()=>{ const p = $("#wPick"); p.value = UI.week; try { p.showPicker(); } catch(e){} };
+  $("#wPick").onchange = e=>{ if (e.target.value){ UI.week = monday(e.target.value); UI.calMonth = null; render(); } };
+  $("#btnNew").onclick = ()=> openEvent(null, {fechaInicio: defaultDateForWeek()});
+  document.addEventListener("keydown", e=>{ if (e.key==="Escape" && $("#modal").classList.contains("on")) closeModal(); });
+  const ro = new ResizeObserver(()=> document.documentElement.style.setProperty("--tophh", $("#top").offsetHeight+"px")); ro.observe($("#top"));
+}
+function renderMode(){
+  const b = $("#modeBadge"); if (!STORE) return;
+  if (MODE === "navegador"){ b.className = "badge b-loc"; b.textContent = "Solo este dispositivo"; b.title = "Datos guardados solo en este navegador. Clic para conectar una carpeta compartida"; }
+  else if (!connOk){ b.className = "badge b-off"; b.textContent = "Carpeta no disponible"; b.title = "No se puede leer la carpeta compartida. Revise la red o reconecte"; }
+  else if (!STORE.a.canWrite){ b.className = "badge b-loc"; b.textContent = "Carpeta: solo lectura"; b.title = "Clic para reconectar con permiso de edición"; }
+  else { b.className = "badge b-srv"; b.textContent = "Carpeta: " + STORE.a.label; b.title = "Datos en la carpeta compartida «" + STORE.a.label + "». Clic para cambiar de carpeta"; }
+  b.style.cursor = "pointer";
+  b.onclick = ()=>{ if (confirm("¿Cambiar o reconectar la carpeta de datos?")) showConnect(STORE && STORE.a.root || null); };
+}
+function renderWho(){
+  const w = $("#who");
+  if (ME){
+    w.innerHTML = `<div class="u"><b>${esc(ME.nombre)}</b><small>${esc(ME.depto)} · ${ME.rol==="admin"?"Administrador":"Editor"}</small></div>
+      <button class="btn sm" id="bPw" title="Cambiar clave">Clave</button><button class="btn sm" id="bOut">Salir</button>`;
+    $("#bOut").onclick = async ()=>{ await req("POST","/api/logout").catch(()=>{}); TOKEN=""; ME=null; ses.del("guiaSemanal.token"); render(); toast("Sesión cerrada"); };
+    $("#bPw").onclick = ()=> openPassword(false);
+  } else {
+    w.innerHTML = `<span class="small" style="opacity:.8">Solo lectura</span><button class="btn" id="bIn">Ingresar para editar</button>`;
+    $("#bIn").onclick = openLogin;
+  }
+  $("#btnNew").style.display = ME ? "" : "none";
+}
+function renderTabs(){
+  const pend = pendingDeptos(UI.week).length;
+  $("#tabs").innerHTML = TABS.filter(t=>!t.admin || (ME && ME.rol==="admin")).map(t=>{
+    let c = ""; if (t.id==="deptos" && pend) c = `<span class="cnt" title="Departamentos pendientes">${pend}</span>`;
+    if (t.id==="mando"){ const n = weekGuide(UI.week,true).reduce((a,d)=>a+d.items.length,0); if (n) c = `<span class="cnt">${n}</span>`; }
+    return `<button data-t="${t.id}" class="${UI.tab===t.id?"on":""}">${t.t}${c}</button>`; }).join("");
+  $$("#tabs button").forEach(b=> b.onclick = ()=>{ UI.tab = b.dataset.t; store.set("guiaSemanal.tab", UI.tab); render(); });
+}
+function renderBanner(){
+  const el = $("#banner"); let h = "";
+  if (MODE === "navegador") h += `<div class="bannerbox warn"><b>Solo este dispositivo.</b><span>Los datos se guardan únicamente en este dispositivo y nadie más los ve. Para trabajar entre todos, conecte la carpeta compartida (clic en la etiqueta amarilla de arriba). Descargue respaldos con frecuencia.</span></div>`;
+  if (MODE === "carpeta" && STORE && !STORE.a.canWrite && ME) h += `<div class="bannerbox warn"><span>La carpeta está abierta en <b>solo lectura</b>: no podrá guardar cambios. Reconéctela y permita <b>editar</b> archivos, o pida permiso de escritura sobre la carpeta compartida.</span></div>`;
+  if (ME && ME.rol !== "admin"){
+    const nextW = addDays(monday(todayIso()), 7), id = weekId(nextW);
+    if (!S.checkins.find(c=>c.semana===id && c.depto===ME.depto))
+      h += `<div class="bannerbox info"><span>Su departamento (<b>${esc(ME.depto)}</b>) aún no confirma el ingreso de requerimientos para la <b>semana ${weekNum(nextW).week}</b> (${fmtC(nextW)} – ${fmtC(addDays(nextW,6))}).</span>
+            <button class="btn sm pri" id="bnConf">Ir a confirmar</button></div>`;
+  }
+  el.style.display = h ? "block" : "none"; el.innerHTML = h;
+  const b = $("#bnConf"); if (b) b.onclick = ()=>{ UI.week = addDays(monday(todayIso()),7); UI.tab = "deptos"; render(); };
+}
+function render(soft){
+  if (!STORE) return; $(".weeknav").style.visibility = "";
+  const w = weekNum(UI.week);
+  $("#brandShip").textContent = (S.config.buque || "GUÍA SEMANAL").toUpperCase();
+  $("#brandSub").textContent = (S.config.oficina ? S.config.oficina + " · " : "") + `Guía semanal v${APP_VERSION}`;
+  $("#wkLabel").textContent = `SEMANA ${w.week} · ${w.year}`;
+  $("#wkRange").textContent = `${fmtC(UI.week)} – ${fmtC(addDays(UI.week,6))}`;
+  document.title = `Guía Semanal · Semana ${w.week}`;
+  if (UI.tab === "admin" && !(ME && ME.rol==="admin")) UI.tab = "guia";
+  renderMode(); renderWho(); renderTabs(); renderBanner();
+  const y = window.scrollY;
+  ({guia:viewGuia, mando:viewMando, cal:viewCal, anual:viewAnual, plant:viewPlant, deptos:viewDeptos, log:viewLog, admin:viewAdmin})[UI.tab]();
+  if (soft) window.scrollTo(0, y);
+}
+
+/* ═══════════════ vistas ═══════════════ */
+function filtersHTML(opts={}){
+  return `<select id="fDepto" title="Departamento"><option value="">Todos los deptos.</option>${S.deptos.map(d=>`<option ${UI.fDepto===d.codigo?"selected":""} value="${esc(d.codigo)}">${esc(d.codigo)}</option>`).join("")}</select>
+  ${opts.noAlc?"":`<select id="fAlc" title="Alcance"><option value="">Internas y externas</option><option value="INT" ${UI.fAlc==="INT"?"selected":""}>Solo internas</option><option value="EXT" ${UI.fAlc==="EXT"?"selected":""}>Solo externas</option></select>`}
+  ${opts.tipo?`<select id="fTipo"><option value="">Todos los tipos</option>${(S.config.tipos||[]).map(t=>`<option ${UI.fTipo===t?"selected":""}>${esc(t)}</option>`).join("")}</select>`:""}
+  <input type="search" id="fQ" placeholder="Buscar…" value="${esc(UI.q)}" style="width:170px">`;
+}
+function bindFilters(rerender){
+  const f = (id, k) => { const e = $("#"+id); if (e) e.oninput = ()=>{ UI[k] = e.value; if (id==="fQ"){ clearTimeout(bindFilters.t); bindFilters.t = setTimeout(()=>{ bindFilters.refocus = true; rerender(); }, 250); } else rerender(); }; };
+  f("fDepto","fDepto"); f("fAlc","fAlc"); f("fTipo","fTipo"); f("fQ","q");
+  if (bindFilters.refocus){ bindFilters.refocus = false; const q = $("#fQ"); if (q){ q.focus(); q.setSelectionRange(q.value.length, q.value.length); } }
+}
+function docHeadHTML(titulo){
+  const w = weekNum(UI.week), sem = S.semanas.find(s=>s.id===weekId(UI.week)) || {};
+  return `<div class="dochead"><div><b>${esc(S.config.institucion)}</b><br>${esc(S.config.buque)}<br>${esc(S.config.oficina)}</div>
+    <div class="ttl"><div>${esc(titulo)} - SEMANA ${w.week}</div><div>DEL ${fmtC(UI.week)} AL ${fmtC(addDays(UI.week,6))} ${parse(addDays(UI.week,6)).getFullYear()}</div><div class="small" style="font-weight:400">REF.: ${esc(S.config.referencia)}</div></div>
+    <div>VERSIÓN ${esc(sem.version||"1.0")}${sem.publicada?`<br><span class="badge b-srv" style="margin-top:4px">Publicada</span>`:""}</div></div>`;
+}
+function guideTableHTML(days, opts={}){
+  let h = `<table class="g"><colgroup><col style="width:58px"><col style="width:58px"><col style="width:24%"><col style="width:9%"><col style="width:10%"><col style="width:15%">${opts.depto?'<col style="width:8%">':""}<col></colgroup>`;
+  days.forEach(d=>{
+    const g = guardiaFor(d.fecha), canG = ME && ME.rol==="admin";
+    h += `<tr class="dayrow"><td colspan="${opts.depto?8:7}">${fmtLong(d.fecha)}${g?`<span class="gu ${canG?"edit":""}" data-gd="${d.fecha}" title="${canG?"Clic para cambiar la guardia de este día":""}">GUARDIA ${esc(g)}</span>`:""}</td></tr>
+      <tr><th>EV</th><th>HORA</th><th>ACTIVIDAD</th><th>RESPONSABLE</th><th>LUGAR</th><th>PARTICIPANTES</th>${opts.depto?"<th>DEPTO.</th>":""}<th>OBSERVACIONES</th></tr>`;
+    if (!d.items.length) h += `<tr class="empty"><td colspan="${opts.depto?8:7}">Sin actividades registradas</td></tr>`;
+    d.items.forEach(it=>{
+      const ev = it.ev, ob = obsLines(ev);
+      h += `<tr class="ev ${ev.alcance==="EXT"?"ext":""} ${ev.estado==="cancelado"?"cx":""}" data-id="${ev.id}">
+        <td class="c">${esc(ev.ev||"PT")}<span class="evn mono">${it.num}</span></td><td class="c mono">${horaHTML(ev)}</td>
+        <td>${esc(ev.actividad)}${it.marca?`<span class="tag t-mark">${it.marca}</span>`:""}${ev.alcance==="EXT"&&!opts.noExtTag?`<span class="tag t-ext" title="Va también a la guía semanal externa">▲ EXTERNA</span>`:""}</td>
+        <td>${esc(ev.responsable)}</td><td>${esc(ev.lugar)}</td><td>${esc(ev.participantes)}</td>${opts.depto?`<td class="small">${esc(ev.depto)}</td>`:""}
+        <td>${ob.length? ob.map((l,i)=>`${i+1}. ${esc(l)}`).join("<br>") : "1. S/O."}</td></tr>`;
+    });
+  });
+  return h + `</table>`;
+}
+function firmaHTML(){ const c = S.config; if (!c.firmaNombre && !c.firmaGrado) return ""; return `<div class="firma"><div class="ln"></div>${esc(c.firmaNombre)}<br>${esc(c.firmaGrado)}<br>${esc(c.firmaCargo)}</div>`; }
+function bindGuideTable(root){
+  $$("tr.ev", root).forEach(tr=> tr.onclick = ()=> openEvent(S.events.find(e=>e.id===tr.dataset.id)));
+  $$(".gu.edit", root).forEach(g=> g.onclick = e=>{ e.stopPropagation(); editGuardia(g.dataset.gd); });
+}
+function weekVersionTools(){
+  if (!(ME && ME.rol==="admin")) return "";
+  const sem = S.semanas.find(s=>s.id===weekId(UI.week)) || {};
+  return `<span class="small muted">Versión</span><input id="verIn" value="${esc(sem.version||"1.0")}" style="width:56px;border:1px solid var(--line);border-radius:7px;padding:5px 6px">
+    <button class="btn sm" id="verSave">Guardar</button><button class="btn sm" id="verPub">${sem.publicada?"Quitar «publicada»":"Marcar publicada"}</button>`;
+}
+function bindVersion(){
+  const s = $("#verSave"); if (!s) return; const id = weekId(UI.week);
+  s.onclick = async ()=>{ try { await req("PUT","/api/semanas/"+id,{version:$("#verIn").value.trim()}); await refresh(); toast("Versión guardada"); } catch(e){ toast(e.message,true); } };
+  $("#verPub").onclick = async ()=>{ const sem = S.semanas.find(x=>x.id===id)||{}; try { await req("PUT","/api/semanas/"+id,{version:$("#verIn").value.trim(), publicada:!sem.publicada}); await refresh(); } catch(e){ toast(e.message,true); } };
+}
+
+function viewGuia(){
+  const days = weekGuide(UI.week, false, true);
+  const n = days.reduce((a,d)=>a+d.items.length,0), next = days.reduce((a,d)=>a+d.items.filter(i=>i.ev.alcance==="EXT").length,0);
+  $("#view").innerHTML = `<div class="toolbar"><h2>Guía semanal interna</h2><span class="small muted">${n} actividades · ${next} externas</span><div class="grow"></div>
+     ${filtersHTML()} ${weekVersionTools()}
+     <button class="btn" id="bPrint">Imprimir</button><button class="btn pri" id="bWord">Exportar a Word</button></div>
+     <div class="legend" style="margin-bottom:8px"><span><i style="background:var(--ext)"></i>▲ EXTERNA = va también a la guía semanal externa</span><span>Clic en una fila para ver o editar</span></div>
+     <div id="gwrap" style="overflow-x:auto">${docHeadHTML("GUÍA DE ACTIVIDADES SEMANAL INTERNA")}${guideTableHTML(days)}${firmaHTML()}</div>`;
+  bindFilters(viewGuia); bindGuideTable($("#gwrap")); bindVersion();
+  $("#bPrint").onclick = ()=> exportDoc("interna","print");
+  $("#bWord").onclick = ()=> exportDoc("interna","word");
+}
+function viewMando(){
+  const days = weekGuide(UI.week, true, true);
+  const n = days.reduce((a,d)=>a+d.items.length,0), wid = weekId(UI.week);
+  const byDep = {}; days.forEach(d=>d.items.forEach(it=>{ byDep[it.ev.depto] = (byDep[it.ev.depto]||0)+1; }));
+  const chk = S.deptos.map(d=>{ const c = S.checkins.find(x=>x.semana===wid && x.depto===d.codigo);
+    return `<span class="st ${c?(c.sinNovedad?"sn":"ok"):"pend"}" title="${c?`Confirmado por ${esc(c.nombre||c.usuario)} el ${fmtTs(c.ts)}`:"Pendiente"}">${c?"✔":"⏳"} ${esc(d.codigo)} <span class="muted" style="font-weight:400">${byDep[d.codigo]||0}</span></span>`; }).join(" ");
+  $("#view").innerHTML = `<div class="toolbar"><h2>Guía semanal externa</h2><span class="small muted">${n} ${n===1?"actividad externa":"actividades externas"}</span><div class="grow"></div>
+     ${filtersHTML({noAlc:true})}
+     <button class="btn" id="bCopy" title="Copiar como texto para correo o mensaje">Copiar texto</button><button class="btn" id="bPrint">Imprimir</button><button class="btn ext" id="bWord">Exportar a Word</button></div>
+     <div class="card pad" style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="lbl" style="margin-right:6px">Ingreso por depto.</span>${chk}</div>
+     <div id="gwrap" style="overflow-x:auto">${docHeadHTML("GUÍA DE ACTIVIDADES SEMANAL EXTERNA")}${n?guideTableHTML(days.filter(d=>d.items.length),{depto:true, noExtTag:true}):`<div class="card empty">No hay actividades marcadas como <b>externas</b> para esta semana.<br><span class="small">Al crear o editar una actividad, marque «Externa — va también a la guía semanal externa».</span></div>`}</div>`;
+  bindFilters(viewMando); bindGuideTable($("#gwrap"));
+  $("#bPrint").onclick = ()=> exportDoc("mando","print");
+  $("#bWord").onclick = ()=> exportDoc("mando","word");
+  $("#bCopy").onclick = ()=> copyText(mandoText(days));
+}
+function mandoText(days){
+  const w = weekNum(UI.week); let t = `GUÍA SEMANAL EXTERNA ${S.config.buque.toUpperCase()} - SEMANA ${w.week} (DEL ${fmtC(UI.week)} AL ${fmtC(addDays(UI.week,6))})\n`;
+  days.filter(d=>d.items.length).forEach(d=>{
+    t += `\n${fmtLong(d.fecha)}\n`;
+    d.items.forEach(it=>{ const e = it.ev, h = [e.horaInicio,e.horaFin].filter(Boolean).join("-");
+      t += `- ${h?h+" ":""}${e.actividad}${it.marca?" ("+it.marca+")":""} // RESP: ${e.responsable||"-"} // LUGAR: ${e.lugar||"-"}${e.participantes?" // PART: "+e.participantes:""}${obsLines(e).length?" // OBS: "+obsLines(e).join(" ; "):""}${e.estado==="cancelado"?" // CANCELADO":""}\n`; });
+  });
+  return t;
+}
+async function copyText(t){
+  try { await navigator.clipboard.writeText(t); toast("Texto copiado al portapapeles"); }
+  catch(e){ openModal(`<div class="mbox"><div class="mhd"><h3>Copiar texto</h3><button class="x" data-close>×</button></div><div class="mbd"><textarea style="width:100%;height:50vh" class="mono small">${esc(t)}</textarea><p class="small muted">Seleccione todo (Ctrl+A) y copie (Ctrl+C).</p></div></div>`); $("#modal textarea").select(); }
+}
+
+/* calendario mensual */
+function viewCal(){
+  const base = UI.calMonth || UI.week.slice(0,7)+"-01";
+  const [Y, M] = base.split("-").map(Number);
+  const first = `${Y}-${pad(M)}-01`, start = monday(first), endM = `${Y}-${pad(M)}-${pad(lastDay(Y,M-1))}`, end = addDays(monday(endM), 6);
+  const map = {};
+  S.events.forEach(ev=>{ if (!passFilters(ev)) return; occurrences(ev, start, end, false).forEach(o=>{ (map[o.fecha] = map[o.fecha]||[]).push({ev, marca:o.marca}); }); });
+  Object.values(map).forEach(l=> l.sort((x,y)=> (x.ev.mostrar==="anual") - (y.ev.mostrar==="anual") || horaKey(x.ev)-horaKey(y.ev)));
+  const td = todayIso(), wEnd = addDays(UI.week,6);
+  let h = `<div class="toolbar"><h2>Calendario</h2><button class="btn" id="cPrev">◀</button><b style="min-width:150px;text-align:center;letter-spacing:.05em">${MES_L[M-1]} ${Y}</b><button class="btn" id="cNext">▶</button>
+    <div class="grow"></div>${filtersHTML()}</div>
+    <div class="legend" style="margin-bottom:8px"><span><i style="background:var(--int)"></i>Interno</span><span><i style="background:var(--ext)"></i>Externa (guía semanal externa)</span><span><i style="background:#8796a5"></i>Solo planilla anual (inicio/término)</span><span>Clic en el número del día → abre su semana en la guía</span></div>
+    <div class="cal">${["LUN","MAR","MIÉ","JUE","VIE","SÁB","DOM"].map(d=>`<div class="dh">${d}</div>`).join("")}`;
+  for (let s=start; s<=end; s=addDays(s,1)){
+    const l = map[s]||[], out = s.slice(5,7) !== pad(M), MAX = 6;
+    h += `<div class="d ${out?"out":""} ${s===td?"today":""} ${s>=UI.week&&s<=wEnd?"selw":""}" data-d="${s}"><div class="hd"><span class="n" data-go="${s}">${parse(s).getDate()}</span><span class="g">${esc(guardiaFor(s))}</span></div>
+      ${l.slice(0,MAX).map(it=>chipHTML(it)).join("")}${l.length>MAX?`<div class="more" data-more="${s}">+${l.length-MAX} más…</div>`:""}
+      ${ME?`<button class="add" data-add="${s}" title="Nueva actividad este día">＋</button>`:""}</div>`;
+  }
+  $("#view").innerHTML = h + `</div>`;
+  bindFilters(viewCal);
+  $("#cPrev").onclick = ()=>{ UI.calMonth = `${M===1?Y-1:Y}-${pad(M===1?12:M-1)}-01`; viewCal(); };
+  $("#cNext").onclick = ()=>{ UI.calMonth = `${M===12?Y+1:Y}-${pad(M===12?1:M+1)}-01`; viewCal(); };
+  $$(".chip").forEach(c=> c.onclick = ()=> openEvent(S.events.find(e=>e.id===c.dataset.id)));
+  $$("[data-go]").forEach(n=> n.onclick = ()=>{ UI.week = monday(n.dataset.go); UI.tab = "guia"; render(); });
+  $$("[data-add]").forEach(b=> b.onclick = e=>{ e.stopPropagation(); openEvent(null, {fechaInicio:b.dataset.add}); });
+  $$("[data-more]").forEach(m=> m.onclick = ()=> dayList(m.dataset.more, map[m.dataset.more]));
+}
+function chipHTML(it){
+  const ev = it.ev, hh = isNumHora(ev.horaInicio) ? `<b>${esc(ev.horaInicio)}</b> ` : "";
+  return `<button class="chip ${ev.alcance==="EXT"?"ext":""} ${ev.mostrar==="anual"?"anual":""} ${ev.estado==="cancelado"?"cx":""}" data-id="${ev.id}" title="${esc(ev.actividad)} · ${esc(ev.responsable)} · ${esc(ev.depto)}">${ev.alcance==="EXT"?"▲ ":""}${hh}${it.marca?it.marca+": ":""}${esc(ev.actividad)}</button>`;
+}
+function dayList(s, l){
+  openModal(`<div class="mbox sm"><div class="mhd"><h3>${fmtLong(s)}</h3><button class="x" data-close>×</button></div><div class="mbd">${l.map(chipHTML).join("")}</div></div>`);
+  $$("#modal .chip").forEach(c=> c.onclick = ()=> openEvent(S.events.find(e=>e.id===c.dataset.id)));
+}
+
+/* planilla anual */
+function fechaAnual(ev){
+  const fi = ev.fechaInicio, ff = ev.fechaFin||fi, yi = fi.slice(0,4), yf = ff.slice(0,4);
+  if (ev.recurrencia && ev.recurrencia.tipo !== "ninguna") return fi.slice(5)==="01-01" && ff.slice(5)==="12-31" && yi===yf ? yi : `${fmtC(fi)} – ${fmtC(ff)} ${yf}`;
+  if (fi.slice(5)==="01-01" && ff.slice(5)==="12-31" && yi===yf) return yi;
+  if (fi === ff) return fmtC(fi);
+  return yi !== yf ? `${fmtC(fi)} ${yi} – ${fmtC(ff)} ${yf}` : `${fmtC(fi)} – ${fmtC(ff)}`;
+}
+function actAnual(ev){
+  const parts = [];
+  const rt = recurText(ev.recurrencia); parts.push((rt ? rt + ", " : "") + ev.actividad);
+  if (ev.participantes && ev.participantes !== "-") parts.push("PARTICIPA: " + ev.participantes);
+  if (ev.lugar && ev.lugar !== "A BORDO") parts.push("LUGAR: " + ev.lugar);
+  obsLines(ev).forEach(o=> parts.push(o.replace(/\.$/,"")));
+  return parts.join(" // ") + " //";
+}
+function annualRows(year){
+  const ys = `${year}-01-01`, ye = `${year}-12-31`;
+  const l = S.events.filter(ev=> ev.enAnual && passFilters(ev) && ev.fechaInicio <= ye && (ev.fechaFin||ev.fechaInicio) >= ys);
+  const rec = l.filter(e=>e.recurrencia && e.recurrencia.tipo!=="ninguna"), whole = l.filter(e=>!rec.includes(e) && e.fechaInicio<=ys && (e.fechaFin||"")>=ye);
+  const rest = l.filter(e=>!rec.includes(e) && !whole.includes(e)).sort((a,b)=> a.fechaInicio.localeCompare(b.fechaInicio) || (a.fechaFin||"").localeCompare(b.fechaFin||"") || a.actividad.localeCompare(b.actividad));
+  return {fijos: whole.concat(rec), rest};
+}
+function viewAnual(){
+  const year = +(UI.anualYear || UI.week.slice(0,4)); const {fijos, rest} = annualRows(year); const td = todayIso();
+  const row = ev => { const past = (ev.fechaFin||ev.fechaInicio) < td && !(ev.recurrencia&&ev.recurrencia.tipo!=="ninguna");
+    if (UI.ocultarPasados && past) return "";
+    return `<tr class="r ${past?"past":""} ${ev.estado==="cancelado"?"cx":""}" data-id="${ev.id}"><td class="f">${fechaAnual(ev)}</td><td class="act">${esc(actAnual(ev))}${ev.alcance==="EXT"?` <span class="tag t-ext">▲ EXTERNA</span>`:""}</td><td class="t">${esc(ev.depto)}</td></tr>`; };
+  let h = `<div class="toolbar"><h2>Planilla anual</h2><button class="btn sm" id="yPrev">◀</button><b>${year}</b><button class="btn sm" id="yNext">▶</button>
+    <span class="small muted">${fijos.length+rest.length} actividades</span><div class="grow"></div>${filtersHTML()}
+    <label class="small"><input type="checkbox" id="oPast" ${UI.ocultarPasados?"checked":""}> Ocultar pasados</label>
+    <button class="btn" id="bPrint">Imprimir</button><button class="btn" id="bWord">Exportar a Word</button></div>
+    <div class="small muted" style="margin-bottom:8px">Aquí queda todo lo que llega por mensaje, correo o instrucción durante el año, para no perder plazos. Los eventos con «Incluir en planilla anual» aparecen acá; los que además se muestran en la guía se publican automáticamente en su semana.</div>
+    <table class="a"><thead><tr><th>FECHA</th><th>ACTIVIDAD</th><th>DEPTO.</th></tr></thead><tbody>`;
+  if (fijos.length) h += `<tr class="mes"><td colspan="3">PERMANENTES / TODO EL AÑO</td></tr>` + fijos.map(row).join("");
+  let mes = -1;
+  rest.forEach(ev=>{ const m = ev.fechaInicio.slice(0,4) < String(year) ? 0 : +ev.fechaInicio.slice(5,7)-1; const r = row(ev); if (!r) return;
+    if (m !== mes){ mes = m; h += `<tr class="mes"><td colspan="3">${MES_L[m]}</td></tr>`; } h += r; });
+  if (!fijos.length && !rest.length) h += `<tr><td colspan="3" class="empty">Sin actividades para ${year}</td></tr>`;
+  $("#view").innerHTML = h + `</tbody></table>`;
+  bindFilters(viewAnual);
+  $("#yPrev").onclick = ()=>{ UI.anualYear = year-1; viewAnual(); }; $("#yNext").onclick = ()=>{ UI.anualYear = year+1; viewAnual(); };
+  $("#oPast").onchange = e=>{ UI.ocultarPasados = e.target.checked; viewAnual(); };
+  $$("tr.r").forEach(tr=> tr.onclick = ()=> openEvent(S.events.find(e=>e.id===tr.dataset.id)));
+  $("#bPrint").onclick = ()=> exportDoc("anual","print"); $("#bWord").onclick = ()=> exportDoc("anual","word");
+}
+
+/* control de ingreso por departamento */
+function pendingDeptos(mon){ const id = weekId(mon); return S.deptos.filter(d=>!S.checkins.find(c=>c.semana===id && c.depto===d.codigo)); }
+function viewDeptos(){
+  const wid = weekId(UI.week), days = weekGuide(UI.week, false, false), w = weekNum(UI.week);
+  const cnt = {}; days.forEach(d=>d.items.forEach(it=>{ const c = cnt[it.ev.depto] = cnt[it.ev.depto]||{INT:new Set(),EXT:new Set()}; c[it.ev.alcance].add(it.ev.id); }));
+  const done = S.deptos.length - pendingDeptos(UI.week).length;
+  const cierre = addDays(addDays(UI.week,-7), (+S.config.diaCierre||2)-1);
+  let h = `<div class="toolbar"><h2>Control de ingreso de requerimientos</h2><span class="small muted">Semana ${w.week} · ${fmtC(UI.week)} – ${fmtC(addDays(UI.week,6))}</span></div>
+    <div class="kpis"><div class="kpi"><b>${done} / ${S.deptos.length}</b><span>Departamentos confirmados</span><div class="progress"><i style="width:${S.deptos.length?done/S.deptos.length*100:0}%"></i></div></div>
+      <div class="kpi"><b>${new Set(days.flatMap(d=>d.items.filter(i=>i.ev.alcance==="INT").map(i=>i.ev.id))).size}</b><span>Eventos internos en la semana</span></div>
+      <div class="kpi"><b style="color:var(--ext)">${new Set(days.flatMap(d=>d.items.filter(i=>i.ev.alcance==="EXT").map(i=>i.ev.id))).size}</b><span>Actividades externas</span></div>
+      <div class="kpi"><b style="font-size:17px;padding:5px 0">${DIA_L[dow(cierre)]} ${fmtC(cierre)}</b><span>Plazo sugerido de ingreso${cierre < todayIso() && done < S.deptos.length ? ` · <b style="color:var(--bad)">vencido</b>`:""}</span></div></div>
+    <div class="card" style="overflow:auto"><table class="l"><thead><tr><th>Departamento</th><th>Estado</th><th>Internos</th><th>Externos</th><th>Confirmado por</th><th>Nota</th><th></th></tr></thead><tbody>`;
+  S.deptos.forEach(d=>{
+    const c = S.checkins.find(x=>x.semana===wid && x.depto===d.codigo), k = cnt[d.codigo]||{INT:new Set(),EXT:new Set()};
+    const mine = ME && (ME.rol==="admin" || ME.depto===d.codigo);
+    h += `<tr><td><b>${esc(d.codigo)}</b><div class="small muted">${esc(d.nombre)}</div></td>
+      <td>${c?(c.sinNovedad?`<span class="st sn">✔ Sin novedad</span>`:`<span class="st ok">✔ Ingresado</span>`):`<span class="st pend">⏳ Pendiente</span>`}</td>
+      <td>${k.INT.size}</td><td>${k.EXT.size?`<b style="color:var(--ext)">${k.EXT.size}</b>`:0}</td>
+      <td class="small">${c?`${esc(c.nombre||c.usuario)}<br><span class="muted">${fmtTs(c.ts)}</span>`:"—"}</td><td class="small">${esc(c&&c.nota||"")}</td>
+      <td style="text-align:right;white-space:nowrap">${mine?(c?`<button class="btn sm danger" data-un="${esc(c.id)}">Anular</button> <button class="btn sm" data-conf="${esc(d.codigo)}">Actualizar</button>`:`<button class="btn sm pri" data-conf="${esc(d.codigo)}">Confirmar ingreso</button>`):""}</td></tr>`;
+  });
+  h += `</tbody></table></div><p class="small muted">Cada departamento ingresa sus eventos (internos y externos) y luego presiona <b>Confirmar ingreso</b>. Queda registrado quién confirmó y cuándo. Si no tiene actividades, confirme marcando «Sin novedad».</p>`;
+  $("#view").innerHTML = h;
+  $$("[data-conf]").forEach(b=> b.onclick = ()=> openCheckin(b.dataset.conf, cnt[b.dataset.conf]));
+  $$("[data-un]").forEach(b=> b.onclick = async ()=>{ if (!confirm("¿Anular la confirmación de este departamento?")) return; try { await req("DELETE","/api/checkins/"+encodeURIComponent(b.dataset.un)); await refresh(); } catch(e){ toast(e.message,true); } });
+}
+function openCheckin(depto, k){
+  const w = weekNum(UI.week), wid = weekId(UI.week), c = S.checkins.find(x=>x.semana===wid && x.depto===depto) || {};
+  const ni = k ? k.INT.size : 0, ne = k ? k.EXT.size : 0;
+  openModal(`<div class="mbox sm"><div class="mhd"><h3>Confirmar ingreso — ${esc(depto)}</h3><button class="x" data-close>×</button></div><div class="mbd">
+    <p style="margin-top:0">Semana <b>${w.week}</b> (${fmtC(UI.week)} – ${fmtC(addDays(UI.week,6))}).<br>Su departamento tiene <b>${ni}</b> eventos internos y <b style="color:var(--ext)">${ne}</b> requerimientos externos en esta semana.</p>
+    <div class="f" style="margin-bottom:10px"><label>Nota (opcional)</label><textarea id="ckNota" placeholder="Ej.: requerimiento de bote pendiente de confirmar con OFMAN">${esc(c.nota||"")}</textarea></div>
+    <label><input type="checkbox" id="ckSN" ${c.sinNovedad||(!ni&&!ne)?"checked":""}> Sin novedad (no hay requerimientos esta semana)</label><div class="err" id="ckErr"></div></div>
+    <div class="mft"><div class="grow"></div><button class="btn" data-close>Cancelar</button><button class="btn pri" id="ckOk">Confirmar</button></div></div>`);
+  $("#ckOk").onclick = async ()=>{ try { await req("POST","/api/checkins",{semana:wid, etiqueta:`${w.week} (${fmtC(UI.week)} – ${fmtC(addDays(UI.week,6))})`, depto, nota:$("#ckNota").value, sinNovedad:$("#ckSN").checked}); closeModal(); await refresh(); toast("Ingreso confirmado"); } catch(e){ $("#ckErr").textContent = e.message; } };
+}
+
+/* registro de cambios */
+async function viewLog(){
+  $("#view").innerHTML = `<div class="toolbar"><h2>Registro de cambios</h2><div class="grow"></div><input type="search" id="lQ" placeholder="Filtrar por usuario, acción o texto…" value="${esc(UI.logQ)}" style="width:280px"></div><div id="logT" class="card"><div class="empty">Cargando…</div></div>`;
+  let rows = [];
+  try { rows = await req("GET","/api/auditoria?limite=3000"); } catch(e){ $("#logT").innerHTML = `<div class="empty">${esc(e.message)}</div>`; return; }
+  const draw = ()=>{
+    const q = UI.logQ.toUpperCase(); const l = rows.filter(r=> !q || [r.usuario,r.accion,r.resumen,r.coll].join(" ").toUpperCase().includes(q));
+    $("#logT").innerHTML = `<table class="log"><thead><tr><th style="width:150px">Fecha / hora</th><th style="width:110px">Usuario</th><th style="width:90px">Acción</th><th style="width:100px">Elemento</th><th>Detalle</th></tr></thead><tbody>
+      ${l.slice(0,1500).map(r=>`<tr><td class="mono small" style="white-space:nowrap">${fmtTs(r.ts)}</td><td><b>${esc(r.usuario)}</b></td><td><span class="ac ${esc(r.accion)}">${esc(r.accion)}</span></td><td class="small muted">${({events:"Actividad",plantillas:"Act. guardada",checkins:"Ingreso depto.",usuarios:"Usuario",config:"Configuración",deptos:"Departamentos",semanas:"Semana",sesion:"Sesión",sistema:"Sistema"})[r.coll]||esc(r.coll)}</td>
+      <td>${r.coll==="events"&&S.events.find(e=>e.id===r.docid)?`<a href="#" data-ev="${esc(r.docid)}">${esc(r.resumen)}</a>`:esc(r.resumen)}</td></tr>`).join("")}</tbody></table>${l.length?"":`<div class="empty">Sin registros</div>`}`;
+    $$("[data-ev]").forEach(a=> a.onclick = e=>{ e.preventDefault(); openEvent(S.events.find(x=>x.id===a.dataset.ev), null, "hist"); });
+  };
+  draw(); $("#lQ").oninput = e=>{ UI.logQ = e.target.value; draw(); };
+}
+
+/* ═══════════════ modal de evento ═══════════════ */
+function openModal(html){ const m = $("#modal"); m.innerHTML = html; m.classList.add("on"); $$("[data-close]", m).forEach(b=> b.onclick = closeModal); m.onclick = e=>{ if (e.target === m) closeModal(); }; const f = $("input,select,textarea", m); if (f) setTimeout(()=>f.focus(), 30); }
+function closeModal(){ const m = $("#modal"); m.classList.remove("on"); m.innerHTML = ""; }
+
+/* actividades guardadas: orden alfabético, primero las del depto. del usuario */
+function tplSorted(){
+  const mine = ME ? ME.depto : "";
+  return (S.plantillas||[]).slice().sort((a,b)=> ((a.depto===mine)?0:1) - ((b.depto===mine)?0:1) || String(a.depto).localeCompare(b.depto) || a.actividad.localeCompare(b.actividad));
+}
+const canEditTpl = t => !!ME && (ME.rol === "admin" || t.depto === ME.depto);
+function tplHora(t){ return [t.horaInicio, t.horaFin].filter(Boolean).join("–"); }
+function tplOptionsHTML(sel, withPlaceholder){
+  const groups = {}; tplSorted().forEach(t=> (groups[t.depto||"—"] = groups[t.depto||"—"] || []).push(t));
+  let h = withPlaceholder ? `<option value="" ${sel===""?"selected":""}>— Seleccione una actividad guardada —</option>` : "";
+  Object.entries(groups).forEach(([d,l])=>{
+    h += `<optgroup label="${esc(d)}">${l.map(t=>`<option value="${esc(t.id)}" ${sel===t.id?"selected":""}>${esc(t.actividad)}${tplHora(t)?"  ·  "+esc(tplHora(t)):""}</option>`).join("")}</optgroup>`;
+  });
+  return h + `<option value="__otra" ${sel==="__otra"?"selected":""}>✚ Otra — crear actividad desde cero</option>`;
+}
+function eventFromTpl(t, fecha){
+  return {plantillaId:t.id, fechaInicio:fecha, fechaFin:fecha, horaInicio:t.horaInicio, horaFin:t.horaFin, actividad:t.actividad, responsable:t.responsable, lugar:t.lugar,
+    participantes:t.participantes, observaciones:t.observaciones, alcance:t.alcance, mostrar:t.mostrar||"diario", enAnual:!!t.enAnual, depto:t.depto, ev:t.ev||"PT"};
+}
+function defaultDateForWeek(){ const t = todayIso(); return (t >= UI.week && t <= addDays(UI.week,6)) ? t : UI.week; }
+
+function openEvent(ev, preset, startTab){
+  const isNew = !ev; const editable = isNew ? !!ME : canEdit(ev);
+  const e = ev ? JSON.parse(JSON.stringify(ev)) : Object.assign({ev:"PT", fechaInicio:todayIso(), fechaFin:"", horaInicio:"AM", horaFin:"PM", actividad:"", responsable:"", lugar:"A BORDO", participantes:"",
+      observaciones:"", alcance:"INT", depto: ME ? ME.depto : "", mostrar:"diario", enAnual:true, estado:"activo", recurrencia:{tipo:"ninguna"}}, preset||{});
+  if (!e.fechaFin) e.fechaFin = e.fechaInicio;
+  if (ME && ME.rol !== "admin" && isNew) e.depto = ME.depto;
+  const ro = editable ? "" : "readonly", dis = editable ? "" : "disabled";
+  const r = e.recurrencia || {tipo:"ninguna"};
+  const tpls = S.plantillas || [];
+  /* actividad seleccionada en el menú */
+  let selId = "__otra";
+  if (e.plantillaId && tpls.find(t=>t.id===e.plantillaId)) selId = e.plantillaId;
+  else if (e.actividad){ const m = tpls.find(t=> t.actividad===e.actividad && t.depto===e.depto) || tpls.find(t=> t.actividad===e.actividad); if (m) selId = m.id; }
+  else if (isNew && tpls.length) selId = "";
+  const deptOpts = S.deptos.map(d=>`<option value="${esc(d.codigo)}" ${e.depto===d.codigo?"selected":""}>${esc(d.codigo)} — ${esc(d.nombre)}</option>`).join("");
+  const lockDep = !ME || ME.rol !== "admin";
+  const title = isNew ? "Nueva actividad" : (editable ? "Editar actividad" : "Detalle de la actividad");
+  openModal(`<div class="mbox"><div class="mhd"><h3>${title}</h3>${!isNew?`<span class="badge ${e.alcance==="EXT"?"b-ext":"b-int"}">${e.alcance==="EXT"?"Externa":"Interna"}</span>`:""}<button class="x" data-close aria-label="Cerrar">×</button></div>
+  <div class="mbd">
+    ${!isNew?`<div class="subtabs"><button data-st="det" class="on">Detalle</button><button data-st="hist">Historial de cambios</button></div>`:""}
+    <div id="stDet"><div class="fg">
+      <div class="f c12"><label for="eSel">Actividad</label>
+        <select id="eSel" ${dis}>${tplOptionsHTML(selId, isNew && tpls.length>0)}</select>
+        <input id="eAct" value="${esc(e.actividad)}" ${ro} style="text-transform:uppercase;margin-top:6px;${selId==="__otra"?"":"display:none"}" placeholder="ESCRIBA LA NUEVA ACTIVIDAD — EJ.: OPERACIÓN DE BUCEO" maxlength="300">
+        ${editable?`<label class="chk" id="eTplW"><input type="checkbox" id="eTpl"> <span id="eTplL">Guardar actividad para futuros empleos</span></label>`:""}
+      </div>
+      <div class="f c12"><label>Interna / externa</label>
+        <div class="alc" id="alc"><label class="int ${e.alcance!=="EXT"?"on":""}"><input type="radio" name="alc" value="INT" ${e.alcance!=="EXT"?"checked":""} ${dis}><span><b>Interna</b><small>Solo en la guía semanal interna del buque</small></span></label>
+        <label class="ext ${e.alcance==="EXT"?"on":""}"><input type="radio" name="alc" value="EXT" ${e.alcance==="EXT"?"checked":""} ${dis}><span><b>Externa — va también a la guía semanal externa</b><small>Aparece en la guía interna y se extrae en «Guía semanal externa»</small></span></label></div></div>
+      <div class="f c3"><label for="eFi">Fecha inicio</label><input type="date" id="eFi" value="${e.fechaInicio}" ${ro}></div>
+      <div class="f c3"><label for="eFf" id="lFf">${r.tipo!=="ninguna"?"Repetir hasta":"Fecha término"}</label><input type="date" id="eFf" value="${e.fechaFin}" ${ro}></div>
+      <div class="f c3"><label for="eHi">Hora inicio</label><input id="eHi" value="${esc(e.horaInicio)}" ${ro} list="dlHora" placeholder="0830 / AM" class="mono">
+        ${editable?`<div class="quick"><button type="button" data-h="AM|PM">Todo el día</button><button type="button" data-h="AM|">AM</button><button type="button" data-h="PM|">PM</button></div>`:""}</div>
+      <div class="f c3"><label for="eHf">Hora término</label><input id="eHf" value="${esc(e.horaFin)}" ${ro} list="dlHora" placeholder="1200 / PM" class="mono"></div>
+      ${isNew?`<div class="f c12" id="multiW"></div>`:""}
+      <div class="f c6"><label for="eResp">Responsable</label><input id="eResp" value="${esc(e.responsable)}" ${ro} list="dlResp" style="text-transform:uppercase"></div>
+      <div class="f c6"><label for="eLug">Lugar</label><input id="eLug" value="${esc(e.lugar)}" ${ro} list="dlLug" style="text-transform:uppercase"></div>
+      <div class="f c12"><label for="ePart">Participantes</label><input id="ePart" value="${esc(e.participantes)}" ${ro} style="text-transform:uppercase" placeholder="EJ.: C1 PÉREZ – C2 GONZÁLEZ"></div>
+      <div class="f c12"><label for="eObs">Observaciones</label><textarea id="eObs" ${ro} rows="4" style="text-transform:uppercase" placeholder="UNA POR LÍNEA — SE NUMERAN AUTOMÁTICAMENTE&#10;REF: MSG 250915 FEB 2026.&#10;POC T1 SOTO, ANEXO 1234.">${esc(e.observaciones)}</textarea><span class="hint">Una observación por línea; se numeran 1., 2., 3. en la guía. Si queda vacío se imprime «S/O.»</span></div>
+      <div class="f c4"><label for="eDep">Departamento que ingresa</label><select id="eDep" ${lockDep||!editable?"disabled":""}>${deptOpts}</select></div>
+      <div class="f c4"><label for="eMos">Mostrar en guía semanal</label><select id="eMos" ${dis}>
+        <option value="diario" ${e.mostrar==="diario"?"selected":""}>Todos los días del período</option><option value="habiles" ${e.mostrar==="habiles"?"selected":""}>Solo días hábiles del período (lun–vie)</option>
+        <option value="extremos" ${e.mostrar==="extremos"?"selected":""}>Solo día de inicio y término</option><option value="anual" ${e.mostrar==="anual"?"selected":""}>No mostrar (solo planilla anual)</option></select></div>
+      <div class="f c4"><label for="eRec">Repetición</label><select id="eRec" ${dis}>
+        <option value="ninguna">No se repite</option><option value="diaria" ${r.tipo==="diaria"?"selected":""}>Todos los días</option><option value="habiles" ${r.tipo==="habiles"?"selected":""}>Lunes a viernes</option>
+        <option value="semanal" ${r.tipo==="semanal"?"selected":""}>Semanal (elegir días)</option><option value="mensual" ${r.tipo==="mensual"?"selected":""}>Mensual (día del mes)</option><option value="ultimoHabil" ${r.tipo==="ultimoHabil"?"selected":""}>Último día hábil del mes</option></select></div>
+      <div class="f c12" id="recX" style="display:none"></div>
+      <div class="f c4"><label for="eEst">Estado</label><select id="eEst" ${dis}><option value="activo">Activo</option><option value="cancelado" ${e.estado==="cancelado"?"selected":""}>Cancelado (se muestra tachado)</option></select></div>
+      <div class="f c4"><label>&nbsp;</label><label class="chk" style="margin-top:4px"><input type="checkbox" id="eAnual" ${e.enAnual?"checked":""} ${dis}> Incluir en planilla anual</label><span class="hint">Plazos, comisiones, cursos y todo lo que llega con anticipación</span></div>
+      <div class="f c2"><label for="eEv">Cód. EV</label><input id="eEv" value="${esc(e.ev||"PT")}" ${ro} maxlength="4"></div>
+      <div class="f c2"><label for="eOrd" title="Desempate de orden dentro del mismo horario">Orden</label><input id="eOrd" type="number" value="${esc(e.orden||"")}" ${ro} placeholder="0"></div>
+    </div>
+    ${!isNew?`<p class="meta" style="margin:12px 0 0">Creado por <b>${esc(e.creadoPor)}</b> el ${fmtTs(e.creado)} · Última modificación: <b>${esc(e.modificadoPor)}</b> el ${fmtTs(e.modificado)}</p>`:""}
+    ${!editable && ME?`<p class="meta" style="color:var(--warn)">Esta actividad pertenece a ${esc(e.depto)}. Solo ese departamento o el administrador pueden modificarla.</p>`:""}
+    ${!ME?`<p class="meta">Para crear o modificar actividades, presione «Ingresar para editar».</p>`:""}
+    <div class="err" id="eErr"></div></div>
+    <div id="stHist" style="display:none"><div class="empty">Cargando…</div></div>
+  </div>
+  <div class="mft">${!isNew&&editable?`<button class="btn danger" id="eDel">Eliminar</button>`:""}${!isNew&&ME?`<button class="btn" id="eDup" title="Crear una copia para otra fecha">Duplicar</button>`:""}<div class="grow"></div>
+    <button class="btn" data-close>${editable?"Cancelar":"Cerrar"}</button>${editable?`<button class="btn pri" id="eSave">${isNew?"Crear":"Guardar cambios"}</button>`:""}</div></div>
+  <datalist id="dlHora"><option>AM</option><option>PM</option><option>0800</option><option>0805</option><option>0830</option><option>0900</option><option>1000</option><option>1100</option><option>1200</option><option>1330</option><option>1400</option><option>1600</option><option>1800</option></datalist>
+  <datalist id="dlResp">${(S.config.responsables||[]).map(x=>`<option>${esc(x)}</option>`).join("")}</datalist>
+  <datalist id="dlLug">${(S.config.lugares||[]).map(x=>`<option>${esc(x)}</option>`).join("")}</datalist>`);
+
+  /* ── menú de actividad ── */
+  const setAlc = v => { $$("#alc input").forEach(i=> i.checked = i.value===v); $$("#alc label").forEach(l=> l.classList.toggle("on", l.querySelector("input").checked)); };
+  const updTplLabel = ()=>{
+    const w = $("#eTplW"); if (!w) return; const v = $("#eSel").value, t = tpls.find(x=>x.id===v);
+    if (v === "") { w.style.display = "none"; return; }
+    if (t && !canEditTpl(t)){ w.style.display = "none"; $("#eTpl").checked = false; return; }
+    w.style.display = ""; $("#eTplL").textContent = t ? "Actualizar la actividad guardada con estos datos (horario, responsable, lugar…)" : "Guardar actividad para futuros empleos";
+  };
+  $("#eSel").onchange = ()=>{
+    const v = $("#eSel").value, t = tpls.find(x=>x.id===v);
+    if (v === "__otra"){ $("#eAct").style.display = ""; if (isNew){ $("#eAct").value = ""; } $("#eAct").focus(); }
+    else if (t){
+      $("#eAct").style.display = "none"; $("#eAct").value = t.actividad;
+      $("#eHi").value = t.horaInicio||""; $("#eHf").value = t.horaFin||""; $("#eResp").value = t.responsable||""; $("#eLug").value = t.lugar||"";
+      $("#ePart").value = t.participantes||""; $("#eObs").value = t.observaciones||""; setAlc(t.alcance==="EXT"?"EXT":"INT");
+      $("#eMos").value = t.mostrar||"diario"; if (t.ev) $("#eEv").value = t.ev;
+      if (!lockDep && t.depto) $("#eDep").value = t.depto;
+    }
+    updTplLabel();
+  };
+  updTplLabel();
+  if (selId === "" && isNew) setTimeout(()=> $("#eSel").focus(), 40);
+
+  $$("#alc input").forEach(i=> i.onchange = ()=> $$("#alc label").forEach(l=> l.classList.toggle("on", l.querySelector("input").checked)));
+  $$(".quick [data-h]").forEach(b=> b.onclick = ()=>{ const [a,z] = b.dataset.h.split("|"); $("#eHi").value = a; $("#eHf").value = z; });
+
+  /* ── crear en varios días de la semana (solo al crear) ── */
+  const drawMulti = ()=>{
+    const w = $("#multiW"); if (!w) return;
+    const fi = $("#eFi").value, ff = $("#eFf").value;
+    if (!fi || (ff && ff !== fi) || $("#eRec").value !== "ninguna"){ w.style.display = "none"; w.innerHTML = ""; return; }
+    const prev = new Set($$(".md:checked:not(:disabled)", w).map(i=>i.value)); const mon = monday(fi);
+    w.style.display = "";
+    w.innerHTML = `<label>Crear también en otros días de esa semana</label><div class="days">${[0,1,2,3,4,5,6].map(i=>{ const d = addDays(mon,i), me = d===fi;
+      return `<label class="day ${me?"me":""}"><input type="checkbox" class="md" value="${d}" ${me?"checked disabled":(prev.has(d)?"checked":"")}> ${DIA_C[dow(d)]} ${parse(d).getDate()}</label>`; }).join("")}</div>
+      <span class="hint">Útil para actividades que se repiten en días distintos cada semana: se crea una actividad por cada día marcado.</span>`;
+  };
+  drawMulti();
+
+  const drawRec = ()=>{
+    const t = $("#eRec").value, x = $("#recX"); $("#lFf").textContent = t!=="ninguna" ? "Repetir hasta" : "Fecha término";
+    if (t === "semanal"){ x.style.display = ""; x.innerHTML = `<label>Días</label><div style="display:flex;gap:10px;flex-wrap:wrap">${[1,2,3,4,5,6,0].map(i=>`<label class="chk" style="margin:0"><input type="checkbox" class="rd" value="${i}" ${(r.dias||[]).includes(i)?"checked":""} ${dis}> ${DIA_L[i].slice(0,1)+DIA_L[i].slice(1).toLowerCase()}</label>`).join("")}</div>`; }
+    else if (t === "mensual"){ x.style.display = ""; x.innerHTML = `<label>Día del mes</label><input type="number" id="rDia" min="1" max="31" value="${r.dia||parse($("#eFi").value||todayIso()).getDate()}" style="width:90px" ${ro}>`; }
+    else { x.style.display = "none"; x.innerHTML = ""; }
+    if (t !== "ninguna" && editable && $("#eFf").value === $("#eFi").value){ $("#eFf").value = `${($("#eFi").value||todayIso()).slice(0,4)}-12-31`; }
+    drawMulti();
+  };
+  $("#eRec").onchange = drawRec; if (r.tipo !== "ninguna") drawRec();
+  let anualTocado = !isNew || (preset && "enAnual" in preset); $("#eAnual").addEventListener("change", ()=> anualTocado = true);
+  const sugAnual = ()=>{ if (!anualTocado && editable) $("#eAnual").checked = $("#eFi").value > addDays(monday(todayIso()), 13) || $("#eFf").value > $("#eFi").value; };
+  let prevFi = $("#eFi").value;
+  $("#eFi").onchange = ()=>{ const f = $("#eFf"); if (!f.value || f.value < $("#eFi").value || f.value === prevFi) f.value = $("#eFi").value; prevFi = $("#eFi").value; sugAnual(); drawMulti(); };
+  $("#eFf").addEventListener("change", ()=>{ sugAnual(); drawMulti(); });
+  if (isNew) sugAnual();
+
+  const collect = ()=>{
+    const t = $("#eRec").value; const rec = {tipo:t};
+    if (t === "semanal") rec.dias = $$(".rd:checked").map(i=>+i.value);
+    if (t === "mensual") rec.dia = +($("#rDia").value||1);
+    const up = s => s.trim().toUpperCase();
+    return {ev:up($("#eEv").value)||"PT", fechaInicio:$("#eFi").value, fechaFin:$("#eFf").value||$("#eFi").value, horaInicio:up($("#eHi").value), horaFin:up($("#eHf").value),
+      actividad:up($("#eAct").value), responsable:up($("#eResp").value), lugar:up($("#eLug").value), participantes:up($("#ePart").value),
+      observaciones:$("#eObs").value.split("\n").map(s=>s.trim().replace(/^\d+[.)]\s*/,"")).filter(Boolean).map(s=>s.toUpperCase()).join("\n"),
+      tipo:e.tipo||"", alcance:$("#alc input:checked").value, depto:$("#eDep").value, mostrar:$("#eMos").value, enAnual:$("#eAnual").checked,
+      estado:$("#eEst").value, recurrencia:rec, orden:$("#eOrd").value ? +$("#eOrd").value : ""};
+  };
+  const save = $("#eSave");
+  if (save) save.onclick = async ()=>{
+    const d = collect(); const er = $("#eErr"); er.textContent = "";
+    if ($("#eSel").value === "") return er.textContent = "Seleccione una actividad guardada o elija «Otra» para crear una nueva.";
+    if (!d.actividad) return er.textContent = "Escriba el nombre de la actividad.";
+    if (!d.fechaInicio) return er.textContent = "Ingrese la fecha de inicio.";
+    for (const h of [d.horaInicio, d.horaFin]) if (h && !isNumHora(h) && !["AM","PM"].includes(h)) return er.textContent = `Hora «${h}» no válida: use 4 dígitos (0830) o AM / PM.`;
+    if (d.recurrencia.tipo==="semanal" && !d.recurrencia.dias.length) return er.textContent = "Elija al menos un día de la semana.";
+    const extra = isNew ? $$("#multiW .md:checked:not(:disabled)").map(i=>i.value) : [];
+    save.disabled = true;
+    try {
+      if (isNew){
+        await req("POST","/api/eventos", d);
+        for (const f of extra) await req("POST","/api/eventos", Object.assign({}, d, {fechaInicio:f, fechaFin:f}));
+      } else await req("PUT","/api/eventos/"+e.id, Object.assign({}, d, {_modificado:ev.modificado}));
+      let tplMsg = "";
+      if ($("#eTpl") && $("#eTpl").checked){
+        const sel = tpls.find(x=> x.id === $("#eSel").value);
+        const same = sel || tpls.find(x=> x.actividad === d.actividad && x.depto === d.depto && canEditTpl(x));
+        await req("POST","/api/plantillas", Object.assign({}, d, {id: same ? same.id : undefined}));
+        tplMsg = same ? " · actividad guardada actualizada" : " · actividad guardada para futuros empleos";
+      }
+      closeModal(); await refresh();
+      toast((isNew ? (extra.length ? `${extra.length+1} actividades creadas` : "Actividad creada") : "Cambios guardados") + tplMsg);
+    } catch(x){ er.textContent = x.message; save.disabled = false; }
+  };
+  const del = $("#eDel");
+  if (del) del.onclick = async ()=>{ if (!confirm(`¿Eliminar «${e.actividad}»?\nQuedará constancia en el registro de cambios.`)) return;
+    try { await req("DELETE","/api/eventos/"+e.id); closeModal(); await refresh(); toast("Actividad eliminada"); } catch(x){ $("#eErr").textContent = x.message; } };
+  const dup = $("#eDup");
+  if (dup) dup.onclick = ()=>{ const c = Object.assign({}, ev); ["id","creado","creadoPor","modificado","modificadoPor"].forEach(k=>delete c[k]); if (ME.rol!=="admin") c.depto = ME.depto; openEvent(null, c); toast("Copia lista: ajuste la fecha y guarde"); };
+  $$("[data-st]").forEach(b=> b.onclick = ()=> showSub(b.dataset.st));
+  async function showSub(st){
+    $$("[data-st]").forEach(x=> x.classList.toggle("on", x.dataset.st===st));
+    $("#stDet").style.display = st==="det" ? "" : "none"; $("#stHist").style.display = st==="hist" ? "" : "none";
+    if (st === "hist"){
+      try { const l = await req("GET","/api/auditoria?doc="+encodeURIComponent(e.id));
+        $("#stHist").innerHTML = l.length ? `<div class="hist">${l.map(x=>`<div><span class="mono small">${fmtTs(x.ts)}</span> · <b>${esc(x.usuario)}</b> · <span class="ac ${esc(x.accion)}">${esc(x.accion)}</span><br>${esc(x.resumen)}</div>`).join("")}</div>` : `<div class="empty">Sin historial</div>`;
+      } catch(x){ $("#stHist").innerHTML = `<div class="empty">${esc(x.message)}</div>`; }
+    }
+  }
+  if (startTab === "hist" && !isNew) showSub("hist");
+}
+
+/* ═══════════════ actividades guardadas ═══════════════ */
+function viewPlant(){
+  const q = (UI.plQ||"").toUpperCase();
+  const l = tplSorted().filter(t=> (!UI.fDepto || t.depto===UI.fDepto) && (!q || [t.actividad,t.responsable,t.lugar,t.participantes].join(" ").includes(q)));
+  $("#view").innerHTML = `<div class="toolbar"><h2>Actividades guardadas</h2><span class="small muted">${l.length} de ${(S.plantillas||[]).length}</span><div class="grow"></div>
+      <select id="fDepto"><option value="">Todos los deptos.</option>${S.deptos.map(d=>`<option ${UI.fDepto===d.codigo?"selected":""} value="${esc(d.codigo)}">${esc(d.codigo)}</option>`).join("")}</select>
+      <input type="search" id="plQ" placeholder="Buscar…" value="${esc(UI.plQ||"")}" style="width:200px">
+      ${ME?`<button class="btn pri" id="plNew">＋ Nueva actividad guardada</button>`:""}</div>
+    <p class="small muted" style="margin-top:0">Actividades que se repiten (llamada general, relevo de guardia, faenas, roles…). Al ingresar una actividad aparecen en el menú desplegable; también puede usarlas desde aquí con <b>Usar</b>, que la abre con fecha de la semana seleccionada para ajustar días u horario.</p>
+    <div class="card" style="overflow:auto"><table class="l"><thead><tr><th>Actividad</th><th>Horario</th><th>Responsable</th><th>Lugar</th><th>Interna / externa</th><th>Depto.</th><th>Última modificación</th><th></th></tr></thead><tbody>
+    ${l.map(t=>`<tr><td><b>${esc(t.actividad)}</b>${t.participantes?`<div class="small muted">${esc(t.participantes)}</div>`:""}</td><td class="mono small">${esc(tplHora(t))}</td><td>${esc(t.responsable)}</td><td>${esc(t.lugar)}</td>
+      <td>${t.alcance==="EXT"?`<span class="badge b-ext">Externa</span>`:`<span class="badge b-int">Interna</span>`}</td><td class="small">${esc(t.depto)}</td>
+      <td class="small muted">${esc(t.modificadoPor||"")}<br>${fmtTs(t.modificado)}</td>
+      <td style="text-align:right;white-space:nowrap">${ME?`<button class="btn sm pri" data-use="${esc(t.id)}">Usar</button>`:""} ${canEditTpl(t)?`<button class="btn sm" data-ed="${esc(t.id)}">Editar</button> <button class="btn sm danger" data-rm="${esc(t.id)}">Eliminar</button>`:""}</td></tr>`).join("")}
+    </tbody></table>${l.length?"":`<div class="empty">No hay actividades guardadas${q||UI.fDepto?" con ese filtro":""}.<br><span class="small">Al crear una actividad marque «Guardar actividad para futuros empleos».</span></div>`}</div>`;
+  $("#fDepto").onchange = e=>{ UI.fDepto = e.target.value; viewPlant(); };
+  $("#plQ").oninput = e=>{ UI.plQ = e.target.value; clearTimeout(viewPlant.t); viewPlant.t = setTimeout(()=>{ viewPlant(); const i = $("#plQ"); i.focus(); i.setSelectionRange(i.value.length,i.value.length); }, 250); };
+  const n = $("#plNew"); if (n) n.onclick = ()=> openTemplate(null);
+  $$("[data-use]").forEach(b=> b.onclick = ()=>{ const t = S.plantillas.find(x=>x.id===b.dataset.use); openEvent(null, eventFromTpl(t, defaultDateForWeek())); });
+  $$("[data-ed]").forEach(b=> b.onclick = ()=> openTemplate(S.plantillas.find(x=>x.id===b.dataset.ed)));
+  $$("[data-rm]").forEach(b=> b.onclick = async ()=>{ const t = S.plantillas.find(x=>x.id===b.dataset.rm);
+    if (!confirm(`¿Eliminar la actividad guardada «${t.actividad}»?\nLas actividades ya ingresadas en la guía no se borran.`)) return;
+    try { await req("DELETE","/api/plantillas/"+encodeURIComponent(t.id)); await refresh(); toast("Actividad guardada eliminada"); } catch(e){ toast(e.message,true); } });
+}
+function openTemplate(t){
+  const isNew = !t; t = t || {actividad:"", horaInicio:"", horaFin:"", responsable:"", lugar:"A BORDO", participantes:"", observaciones:"", alcance:"INT", mostrar:"diario", enAnual:false, depto: ME.depto, ev:"PT"};
+  const lockDep = ME.rol !== "admin";
+  openModal(`<div class="mbox"><div class="mhd"><h3>${isNew?"Nueva actividad guardada":"Editar actividad guardada"}</h3><button class="x" data-close>×</button></div><div class="mbd"><div class="fg">
+    <div class="f c12"><label>Actividad</label><input id="tAct" value="${esc(t.actividad)}" style="text-transform:uppercase"></div>
+    <div class="f c12"><label>Interna / externa</label><div class="alc" id="alc"><label class="int ${t.alcance!=="EXT"?"on":""}"><input type="radio" name="alc" value="INT" ${t.alcance!=="EXT"?"checked":""}><span><b>Interna</b></span></label>
+      <label class="ext ${t.alcance==="EXT"?"on":""}"><input type="radio" name="alc" value="EXT" ${t.alcance==="EXT"?"checked":""}><span><b>Externa — va también a la guía semanal externa</b></span></label></div></div>
+    <div class="f c3"><label>Hora inicio</label><input id="tHi" value="${esc(t.horaInicio)}" class="mono" list="dlHora2" placeholder="0830 / AM"></div>
+    <div class="f c3"><label>Hora término</label><input id="tHf" value="${esc(t.horaFin)}" class="mono" list="dlHora2" placeholder="1200 / PM"></div>
+    <div class="f c3"><label>Responsable</label><input id="tResp" value="${esc(t.responsable)}" list="dlResp2" style="text-transform:uppercase"></div>
+    <div class="f c3"><label>Lugar</label><input id="tLug" value="${esc(t.lugar)}" list="dlLug2" style="text-transform:uppercase"></div>
+    <div class="f c12"><label>Participantes</label><input id="tPart" value="${esc(t.participantes)}" style="text-transform:uppercase"></div>
+    <div class="f c12"><label>Observaciones</label><textarea id="tObs" rows="3" style="text-transform:uppercase">${esc(t.observaciones)}</textarea></div>
+    <div class="f c6"><label>Departamento</label><select id="tDep" ${lockDep?"disabled":""}>${S.deptos.map(d=>`<option ${t.depto===d.codigo?"selected":""}>${esc(d.codigo)}</option>`).join("")}</select></div>
+    <div class="f c6"><label>Mostrar en guía</label><select id="tMos"><option value="diario">Todos los días del período</option><option value="habiles" ${t.mostrar==="habiles"?"selected":""}>Solo días hábiles</option><option value="extremos" ${t.mostrar==="extremos"?"selected":""}>Solo inicio y término</option><option value="anual" ${t.mostrar==="anual"?"selected":""}>Solo planilla anual</option></select></div>
+    </div><div class="err" id="tErr"></div></div>
+    <div class="mft"><div class="grow"></div><button class="btn" data-close>Cancelar</button><button class="btn pri" id="tOk">Guardar</button></div></div>
+    <datalist id="dlHora2"><option>AM</option><option>PM</option></datalist>
+    <datalist id="dlResp2">${(S.config.responsables||[]).map(x=>`<option>${esc(x)}</option>`).join("")}</datalist><datalist id="dlLug2">${(S.config.lugares||[]).map(x=>`<option>${esc(x)}</option>`).join("")}</datalist>`);
+  $$("#alc input").forEach(i=> i.onchange = ()=> $$("#alc label").forEach(l=> l.classList.toggle("on", l.querySelector("input").checked)));
+  $("#tOk").onclick = async ()=>{
+    const up = id => $(id).value.trim().toUpperCase();
+    const b = {id: isNew ? undefined : t.id, actividad:up("#tAct"), horaInicio:up("#tHi"), horaFin:up("#tHf"), responsable:up("#tResp"), lugar:up("#tLug"), participantes:up("#tPart"),
+      observaciones:$("#tObs").value.split("\n").map(s=>s.trim().replace(/^\d+[.)]\s*/,"")).filter(Boolean).map(s=>s.toUpperCase()).join("\n"),
+      alcance:$("#alc input:checked").value, depto:$("#tDep").value, mostrar:$("#tMos").value, enAnual:!!t.enAnual, ev:t.ev||"PT"};
+    for (const h of [b.horaInicio, b.horaFin]) if (h && !isNumHora(h) && !["AM","PM"].includes(h)) return $("#tErr").textContent = `Hora «${h}» no válida: use 4 dígitos (0830) o AM / PM.`;
+    if (isNew && S.plantillas.find(x=> x.actividad===b.actividad && x.depto===b.depto)) return $("#tErr").textContent = "Ya existe una actividad guardada con ese nombre en ese departamento.";
+    try { await req("POST","/api/plantillas", b); closeModal(); await refresh(); toast("Actividad guardada"); } catch(e){ $("#tErr").textContent = e.message; }
+  };
+}
+
+/* ═══════════════ sesión ═══════════════ */
+function openLogin(){
+  openModal(`<div class="mbox sm"><div class="mhd"><h3>Ingresar para editar</h3><button class="x" data-close>×</button></div><form class="mbd" id="lgF">
+    <div class="f" style="margin-bottom:10px"><label for="lgU">Usuario</label><input id="lgU" autocomplete="username" autocapitalize="none"></div>
+    <div class="f"><label for="lgP">Clave</label><input id="lgP" type="password" autocomplete="current-password"></div><div class="err" id="lgE"></div>
+    <p class="small muted" style="margin-bottom:0">Las cuentas las crea el administrador (OFOPER). Ver la guía no requiere usuario.</p>
+    <button type="submit" style="display:none"></button></form>
+    <div class="mft"><div class="grow"></div><button class="btn" data-close>Cancelar</button><button class="btn pri" id="lgOk">Ingresar</button></div></div>`);
+  const go = async ev=>{ if (ev) ev.preventDefault();
+    try { const r = await req("POST","/api/login",{usuario:$("#lgU").value, clave:$("#lgP").value}); TOKEN = r.token; ME = r.usuario; ses.set("guiaSemanal.token", TOKEN);
+      closeModal(); await refresh(); toast(`Bienvenido, ${ME.nombre}`); if (ME.debeCambiar) openPassword(true); }
+    catch(e){ $("#lgE").textContent = e.message; } };
+  $("#lgOk").onclick = go; $("#lgF").onsubmit = go;
+}
+function openPassword(force){
+  openModal(`<div class="mbox sm"><div class="mhd"><h3>${force?"Debe cambiar su clave":"Cambiar clave"}</h3>${force?"":`<button class="x" data-close>×</button>`}</div><div class="mbd">
+    ${force?`<p class="small" style="margin-top:0">Su clave fue asignada por el administrador. Defina una clave personal (mínimo 6 caracteres).</p>`:""}
+    <div class="f" style="margin-bottom:10px"><label>Clave actual</label><input type="password" id="pwA" autocomplete="current-password"></div>
+    <div class="f" style="margin-bottom:10px"><label>Clave nueva</label><input type="password" id="pwN" autocomplete="new-password"></div>
+    <div class="f"><label>Repetir clave nueva</label><input type="password" id="pwR" autocomplete="new-password"></div><div class="err" id="pwE"></div></div>
+    <div class="mft"><div class="grow"></div>${force?"":`<button class="btn" data-close>Cancelar</button>`}<button class="btn pri" id="pwOk">Guardar clave</button></div></div>`);
+  if (force) $("#modal").onclick = null;
+  $("#pwOk").onclick = async ()=>{ if ($("#pwN").value !== $("#pwR").value) return $("#pwE").textContent = "Las claves nuevas no coinciden.";
+    try { const r = await req("PUT","/api/clave",{actual:$("#pwA").value, nueva:$("#pwN").value}); ME = r.usuario; closeModal(); await refresh(); toast("Clave actualizada"); } catch(e){ $("#pwE").textContent = e.message; } };
+}
+function editGuardia(s){
+  const cur = guardiaFor(s), ov = (S.config.guardiaOverrides||{})[s];
+  const v = prompt(`Guardia para ${fmtLong(s)}\n(deje vacío para volver a la rotación automática)`, ov || cur);
+  if (v === null) return;
+  const o = Object.assign({}, S.config.guardiaOverrides||{}); if (v.trim()) o[s] = v.trim().toUpperCase(); else delete o[s];
+  req("PUT","/api/config",{guardiaOverrides:o}).then(refresh).catch(e=>toast(e.message,true));
+}
+
+/* ═══════════════ administración ═══════════════ */
+function viewAdmin(){
+  const T = [["general","Unidad y firma"],["guardias","Guardias"],["listas","Listas"],["deptos","Departamentos"],["usuarios","Usuarios"],["respaldo","Respaldo"]];
+  $("#view").innerHTML = `<div class="toolbar"><h2>Administración</h2></div><div class="adm"><nav>${T.map(([k,t])=>`<button data-a="${k}" class="${UI.admTab===k?"on":""}">${t}</button>`).join("")}</nav><div class="card pad" id="admB"></div></div>`;
+  $$("[data-a]").forEach(b=> b.onclick = ()=>{ UI.admTab = b.dataset.a; viewAdmin(); });
+  ({general:admGeneral, guardias:admGuardias, listas:admListas, deptos:admDeptos, usuarios:admUsuarios, respaldo:admRespaldo})[UI.admTab]();
+}
+const saveCfg = async (patch, msg) => { try { await req("PUT","/api/config",patch); await refresh(); toast(msg||"Configuración guardada"); } catch(e){ toast(e.message,true); } };
+function admGeneral(){
+  const c = S.config, F = (k,l,cl="c6") => `<div class="f ${cl}"><label>${l}</label><input data-k="${k}" value="${esc(c[k]||"")}"></div>`;
+  $("#admB").innerHTML = `<h3>Unidad, encabezado y firma</h3><div class="fg">${F("institucion","Institución")}${F("buque","Unidad")}${F("oficina","Oficina")}${F("referencia","Referencia del formato (REF.)")}
+    ${F("firmaNombre","Nombre para la firma","c4")}${F("firmaGrado","Grado","c4")}${F("firmaCargo","Cargo","c4")}
+    <div class="f c6"><label>Numeración de semanas</label><select data-k="numeracionSemana"><option value="primerLunes">Semana 1 = primer lunes del año</option><option value="iso" ${c.numeracionSemana==="iso"?"selected":""}>ISO 8601 (semana con el primer jueves)</option></select></div>
+    <div class="f c6"><label>Plazo sugerido de ingreso de requerimientos (semana anterior)</label><select data-k="diaCierre">${[1,2,3,4,5].map(i=>`<option value="${i}" ${+c.diaCierre===i?"selected":""}>${DIA_L[i]}</option>`).join("")}</select></div></div>
+    <div style="margin-top:14px"><button class="btn pri" id="gSave">Guardar</button></div>`;
+  $("#gSave").onclick = ()=>{ const p = {}; $$("[data-k]").forEach(i=> p[i.dataset.k] = i.dataset.k==="diaCierre" ? +i.value : i.value.trim()); saveCfg(p); };
+}
+function admGuardias(){
+  const c = S.config, ov = Object.entries(c.guardiaOverrides||{}).sort();
+  $("#admB").innerHTML = `<h3>Rotación de guardias</h3><p class="small muted" style="margin-top:0">La guardia de cada día se calcula en ciclo a partir de la fecha de referencia. Para un cambio puntual, haga clic en la guardia del día en la guía semanal.</p>
+    <div class="fg"><div class="f c8"><label>Ciclo de guardias (una por línea, en orden)</label><textarea id="gList" rows="5">${esc((c.guardias||[]).join("\n"))}</textarea></div>
+    <div class="f c4"><label>Fecha en que comienza la primera del ciclo</label><input type="date" id="gAnc" value="${esc(c.guardiaAncla||"")}"><span class="hint">Ej.: 09-03-2026 = BLANCA 2</span></div></div>
+    <div style="margin:12px 0 18px"><button class="btn pri" id="gSave">Guardar rotación</button></div>
+    <h3>Cambios puntuales (${ov.length})</h3>${ov.length?`<table class="l"><tbody>${ov.map(([d,g])=>`<tr><td>${fmtLong(d)}</td><td><b>${esc(g)}</b></td><td style="text-align:right"><button class="btn sm danger" data-ro="${d}">Quitar</button></td></tr>`).join("")}</tbody></table>`:`<p class="small muted">Ninguno.</p>`}`;
+  $("#gSave").onclick = ()=> saveCfg({guardias:$("#gList").value.split("\n").map(s=>s.trim().toUpperCase()).filter(Boolean), guardiaAncla:$("#gAnc").value});
+  $$("[data-ro]").forEach(b=> b.onclick = ()=>{ const o = Object.assign({}, c.guardiaOverrides); delete o[b.dataset.ro]; saveCfg({guardiaOverrides:o}, "Cambio quitado"); });
+}
+function admListas(){
+  const c = S.config, A = (k,l,h) => `<div class="f c4"><label>${l}</label><textarea data-l="${k}" rows="14">${esc((c[k]||[]).join("\n"))}</textarea><span class="hint">${h}</span></div>`;
+  $("#admB").innerHTML = `<h3>Listas de apoyo</h3><div class="fg">${A("responsables","Responsables sugeridos","Sugerencias al escribir")}${A("lugares","Lugares sugeridos","Sugerencias al escribir")}</div>
+    <div style="margin-top:14px"><button class="btn pri" id="lSave">Guardar listas</button></div>`;
+  $("#lSave").onclick = ()=>{ const p = {}; $$("[data-l]").forEach(t=> p[t.dataset.l] = t.value.split("\n").map(s=>s.trim().toUpperCase()).filter(Boolean)); saveCfg(p); };
+}
+function admDeptos(){
+  let l = S.deptos.map(d=>Object.assign({},d));
+  const draw = ()=>{ $("#admB").innerHTML = `<h3>Departamentos</h3><p class="small muted" style="margin-top:0">Cada departamento confirma semanalmente su ingreso. El código se usa para asignar usuarios y eventos.</p>
+    <div class="rowlist">${l.map((d,i)=>`<div class="ri"><input data-i="${i}" data-f="codigo" value="${esc(d.codigo)}" style="width:170px;text-transform:uppercase" placeholder="CÓDIGO"><input data-i="${i}" data-f="nombre" value="${esc(d.nombre)}" style="flex:1" placeholder="Nombre"><button class="btn sm danger" data-rm="${i}">Quitar</button></div>`).join("")}</div>
+    <button class="btn sm" id="dAdd">＋ Agregar</button> <button class="btn pri" id="dSave" style="margin-left:8px">Guardar departamentos</button>
+    <p class="small muted">Si cambia un código, los eventos y usuarios que tenían el código anterior deben reasignarse.</p>`;
+    $$("[data-f]").forEach(i=> i.oninput = ()=> l[+i.dataset.i][i.dataset.f] = i.value);
+    $$("[data-rm]").forEach(b=> b.onclick = ()=>{ l.splice(+b.dataset.rm,1); draw(); });
+    $("#dAdd").onclick = ()=>{ l.push({codigo:"",nombre:""}); draw(); };
+    $("#dSave").onclick = async ()=>{ try { await req("PUT","/api/deptos",{lista:l}); await refresh(); toast("Departamentos guardados"); } catch(e){ toast(e.message,true); } };
+  }; draw();
+}
+async function admUsuarios(){
+  let us = []; try { us = await req("GET","/api/usuarios"); } catch(e){ $("#admB").innerHTML = esc(e.message); return; }
+  us.sort((a,b)=> (a.depto||"").localeCompare(b.depto||"") || a.usuario.localeCompare(b.usuario));
+  $("#admB").innerHTML = `<div style="display:flex;align-items:center;margin-bottom:10px"><h3 style="margin:0;flex:1">Usuarios con permiso de edición</h3><button class="btn pri" id="uNew">＋ Nuevo usuario</button></div>
+    <p class="small muted" style="margin-top:0"><b>Administrador</b>: edita todo, configura y exporta. <b>Editor</b>: crea y edita solo eventos de su departamento y confirma su ingreso semanal. Cualquier persona en la red puede ver la guía sin usuario.</p>
+    <table class="l"><thead><tr><th>Usuario</th><th>Nombre</th><th>Depto.</th><th>Rol</th><th>Estado</th><th></th></tr></thead><tbody>
+    ${us.map(u=>`<tr><td class="mono">${esc(u.usuario)}</td><td>${esc(u.nombre)}</td><td>${esc(u.depto)}</td><td><span class="badge ${u.rol==="admin"?"b-admin":"b-ed"}">${u.rol==="admin"?"Administrador":"Editor"}</span></td>
+      <td class="small">${u.activo===false?`<span style="color:var(--bad)">Desactivado</span>`:"Activo"}${u.debeCambiar?`<br><span class="muted">Debe cambiar clave</span>`:""}</td>
+      <td style="text-align:right"><button class="btn sm" data-ue="${esc(u.usuario)}">Editar</button></td></tr>`).join("")}</tbody></table>`;
+  $("#uNew").onclick = ()=> userForm(null);
+  $$("[data-ue]").forEach(b=> b.onclick = ()=> userForm(us.find(u=>u.usuario===b.dataset.ue)));
+}
+function userForm(u){
+  const isNew = !u; u = u || {usuario:"", nombre:"", depto:S.deptos[0]?.codigo||"", rol:"editor", activo:true};
+  openModal(`<div class="mbox sm"><div class="mhd"><h3>${isNew?"Nuevo usuario":"Editar usuario "+esc(u.usuario)}</h3><button class="x" data-close>×</button></div><div class="mbd"><div class="fg">
+    <div class="f c12"><label>Usuario (para ingresar)</label><input id="uU" value="${esc(u.usuario)}" ${isNew?"":"readonly"} autocapitalize="none" placeholder="ej.: ofarm"></div>
+    <div class="f c12"><label>Nombre y grado</label><input id="uN" value="${esc(u.nombre)}" placeholder="ej.: T1 PÉREZ"></div>
+    <div class="f c6"><label>Departamento</label><select id="uD">${S.deptos.map(d=>`<option ${u.depto===d.codigo?"selected":""}>${esc(d.codigo)}</option>`).join("")}</select></div>
+    <div class="f c6"><label>Rol</label><select id="uR"><option value="editor">Editor</option><option value="admin" ${u.rol==="admin"?"selected":""}>Administrador</option></select></div>
+    <div class="f c12"><label>${isNew?"Clave inicial":"Reiniciar clave (opcional)"}</label><input id="uP" type="text" autocomplete="off" placeholder="${isNew?"mínimo 6 caracteres":"dejar vacío para mantener"}"><span class="hint">El usuario deberá cambiarla en su primer ingreso.</span></div>
+    ${isNew?"":`<div class="f c12"><label><input type="checkbox" id="uA" ${u.activo!==false?"checked":""}> Cuenta activa</label></div>`}</div><div class="err" id="uE"></div></div>
+    <div class="mft">${isNew?"":`<button class="btn danger" id="uDel">Eliminar</button>`}<div class="grow"></div><button class="btn" data-close>Cancelar</button><button class="btn pri" id="uOk">Guardar</button></div></div>`);
+  $("#uOk").onclick = async ()=>{ const b = {nombre:$("#uN").value.trim(), depto:$("#uD").value, rol:$("#uR").value};
+    if ($("#uP").value) b.clave = $("#uP").value; if (!isNew) b.activo = $("#uA").checked;
+    try { if (isNew){ b.usuario = $("#uU").value.trim(); await req("POST","/api/usuarios",b); } else await req("PUT","/api/usuarios/"+encodeURIComponent(u.usuario),b);
+      closeModal(); await refresh(); toast("Usuario guardado"); } catch(e){ $("#uE").textContent = e.message; } };
+  const d = $("#uDel"); if (d) d.onclick = async ()=>{ if (!confirm(`¿Eliminar al usuario ${u.usuario}? Sus cambios anteriores siguen en el registro.`)) return;
+    try { await req("DELETE","/api/usuarios/"+encodeURIComponent(u.usuario)); closeModal(); await refresh(); } catch(e){ $("#uE").textContent = e.message; } };
+}
+function admRespaldo(){
+  $("#admB").innerHTML = `<h3>Respaldo y restauración</h3>
+    <p class="small" style="margin-top:0">El respaldo incluye <b>todo</b>: eventos, confirmaciones de departamentos, versiones de semanas, configuración, departamentos, usuarios (con claves cifradas) y registro de cambios.</p>
+    ${MODE==="carpeta"?`<p class="small muted">Además, el primer PC que abre la guía cada día deja una copia automática en <span class="mono">datos/respaldos/</span>, y se guarda otra antes de cada restauración. Copiar la carpeta completa de la guía también es un respaldo válido.</p>`:`<p class="small" style="color:var(--warn)">En este modo los datos viven solo en este navegador: descargue un respaldo al terminar cada sesión de trabajo.</p>`}
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 22px"><button class="btn pri" id="rDown">Descargar respaldo (.json)</button>${MODE==="carpeta"?`<button class="btn" id="rSrv">Guardar copia en datos/respaldos ahora</button>`:""}</div>
+    <h3>Restaurar / importar</h3>
+    <div class="fg"><div class="f c8"><label>Archivo de respaldo (.json)</label><input type="file" id="rFile" accept=".json,application/json"></div>
+    <div class="f c4"><label>Modo</label><select id="rMode"><option value="fusionar">Fusionar (agrega/actualiza eventos)</option><option value="reemplazar">Reemplazar todo</option></select></div></div>
+    <div style="margin-top:12px"><button class="btn" id="rUp">Restaurar</button></div><div class="err" id="rE"></div>`;
+  $("#rDown").onclick = async ()=>{ try { const d = await req("GET","/api/respaldo"); download(`respaldo_guia_semanal_${todayIso()}.json`, JSON.stringify(d,null,1), "application/json"); } catch(e){ toast(e.message,true); } };
+  const s = $("#rSrv"); if (s) s.onclick = async ()=>{ try { const r = await req("POST","/api/respaldar"); toast("Copia creada: "+r.archivo); } catch(e){ toast(e.message,true); } };
+  $("#rUp").onclick = async ()=>{ const f = $("#rFile").files[0]; if (!f) return $("#rE").textContent = "Elija un archivo.";
+    let d; try { d = JSON.parse(await f.text()); } catch(e){ return $("#rE").textContent = "El archivo no es JSON válido."; }
+    const modo = $("#rMode").value; if (modo==="reemplazar" && !confirm("Reemplazar TODO: se borrarán los eventos actuales y se cargarán los del archivo. ¿Continuar?")) return;
+    try { const r = await req("POST","/api/restaurar",{datos:d, modo}); await refresh(); toast(`Restaurado: ${r.eventos} eventos`); } catch(e){ $("#rE").textContent = e.message; } };
+}
+function download(name, content, type){ const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([content],{type})); a.download = name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 500); }
+
+/* ═══════════════ impresión y exportación a Word ═══════════════ */
+const DOC_CSS = `@page{size:27.94cm 21.59cm;margin:1.4cm 1.2cm} @page Section1{size:11.0in 8.5in;mso-page-orientation:landscape;margin:1.4cm 1.2cm} div.Section1{page:Section1}
+ body{font-family:Arial,Helvetica,sans-serif;font-size:8.5pt;color:#000} table{border-collapse:collapse;width:100%} td,th{border:1px solid #000;padding:2pt 4pt;vertical-align:top;font-size:8.5pt}
+ th{background:#d9d9d9;font-weight:bold;text-align:center} .c{text-align:center} .day td{background:#1f3864;color:#fff;font-weight:bold;font-size:9.5pt} .cx td{text-decoration:line-through;color:#666}
+ .hd td{border:1px solid #000;font-size:9pt} .ttl{text-align:center;font-weight:bold} .mes td{background:#e7e6e6;font-weight:bold} .firma{margin-top:26pt;text-align:center;width:240pt;margin-left:auto}
+ h1{font-size:11pt;text-align:center;margin:10pt 0 6pt} tr{page-break-inside:avoid}`;
+const B_ = "border:1px solid #000;padding:1pt 3pt;vertical-align:top;font-family:Arial;font-size:8.5pt";
+const TD = (extra="", attrs="") => `<td ${attrs} style="${B_};${extra}">`;
+const TH = (w="") => `<th style="${B_};background:#d9d9d9;font-weight:bold;text-align:center;${w?"width:"+w:""}">`;
+const TBL = `<table border="1" cellspacing="0" cellpadding="1" width="100%" style="border-collapse:collapse;width:100%">`;
+function docHeader(titulo){
+  const w = weekNum(UI.week), sem = S.semanas.find(s=>s.id===weekId(UI.week)) || {}, c = S.config;
+  return `${TBL}<tr>${TD("width:24%;font-size:9pt")}<b>${esc(c.institucion)}</b><br>${esc(c.buque)}<br>${esc(c.oficina)}</td>
+    ${TD("width:56%;text-align:center;font-weight:bold;font-size:9.5pt")}${esc(titulo)} - SEMANA ${w.week}<br>DEL ${fmtC(UI.week)} AL ${fmtC(addDays(UI.week,6))}<br><span style="font-weight:normal;font-size:8.5pt">REF.: ${esc(c.referencia)}</span></td>
+    ${TD("width:20%;text-align:right;font-size:9pt")}VERSIÓN ${esc(sem.version||"1.0")}</td></tr></table><br>`;
+}
+function docGuide(days, opts={}){
+  const cols = opts.depto ? 8 : 7;
+  const head = `<tr>${TH("7%")}EV</th>${TH("6%")}HORA</th>${TH("22%")}ACTIVIDAD</th>${TH("9%")}RESPONSABLE</th>${TH("10%")}LUGAR</th>${TH("15%")}PARTICIPANTES</th>${opts.depto?TH("8%")+"DEPTO.</th>":""}${TH()}OBSERVACIONES</th></tr>`;
+  let h = "";
+  days.forEach(d=>{ const g = guardiaFor(d.fecha);
+    h += `${TBL}<tr>${TD("background:#1f3864;color:#ffffff;font-weight:bold;font-size:9.5pt",`colspan="${cols}" bgcolor="#1f3864"`)}${fmtLong(d.fecha)}${g?` &nbsp;—&nbsp; GUARDIA ${esc(g)}`:""}</td></tr>${head}`;
+    if (!d.items.length) h += `<tr>${TD("text-align:center;font-style:italic",`colspan="${cols}"`)}S/A</td></tr>`;
+    d.items.forEach(it=>{ const e = it.ev, ob = obsLines(e), cx = e.estado==="cancelado" ? "text-decoration:line-through;color:#666" : "";
+      h += `<tr>${TD("text-align:center;"+cx)}${esc(e.ev||"PT")}<br>${it.num}</td>${TD("text-align:center;"+cx)}${horaHTML(e)}</td>${TD(cx)}${esc(e.actividad)}${it.marca?` (${it.marca})`:""}</td>${TD(cx)}${esc(e.responsable)}</td>${TD(cx)}${esc(e.lugar)}</td>${TD(cx)}${esc(e.participantes)}</td>${opts.depto?TD(cx)+esc(e.depto)+"</td>":""}${TD(cx)}${ob.length?ob.map((l,i)=>`${i+1}. ${esc(l)}`).join("<br>"):"1. S/O."}</td></tr>`; });
+    h += `</table><br>`;
+  });
+  return h;
+}
+function docAnual(year){
+  const {fijos, rest} = annualRows(year);
+  const row = ev => { const cx = ev.estado==="cancelado" ? "text-decoration:line-through;color:#666" : ""; return `<tr>${TD("width:16%;font-weight:bold;"+cx)}${fechaAnual(ev)}</td>${TD(cx)}${esc(actAnual(ev))}</td></tr>`; };
+  return `${TBL}<tr>${TH()}FECHA</th>${TH()}ACTIVIDAD — AÑO ${year}</th></tr>${fijos.map(row).join("")}${rest.map(row).join("")}</table>`;
+}
+function docFirma(){ const c = S.config; return (c.firmaNombre||c.firmaGrado) ? `<br><br><p style="text-align:right;font-family:Arial;font-size:9pt">______________________________<br>${esc(c.firmaNombre)}<br>${esc(c.firmaGrado)}<br>${esc(c.firmaCargo)}</p>` : ""; }
+function exportDoc(kind, how){
+  const w = weekNum(UI.week), year = +(kind==="anual" ? (UI.anualYear||UI.week.slice(0,4)) : UI.week.slice(0,4));
+  let body = "", name = "";
+  const rng = `del ${fmtC(UI.week)} al ${fmtC(addDays(UI.week,6))}`;
+  if (kind === "interna"){
+    let incl = true; if (how === "word") incl = confirm("¿Incluir la planilla anual al inicio del documento (como en el formato actual)?\n\nAceptar = sí · Cancelar = solo la semana");
+    body = docHeader("GUÍA DE ACTIVIDADES SEMANAL INTERNA") + (incl ? docAnual(year) + "<br>" : "") + docGuide(weekGuide(UI.week,false,false)) + docFirma();
+    name = `Guía Semanal Interna - SEMANA ${w.week} ${rng}`;
+  } else if (kind === "mando"){
+    const days = weekGuide(UI.week,true,false).filter(d=>d.items.length);
+    body = docHeader("GUÍA DE ACTIVIDADES SEMANAL EXTERNA") + (days.length ? docGuide(days,{depto:true}) : "<p>Sin actividades externas.</p>") + docFirma();
+    name = `Guía Semanal Externa - SEMANA ${w.week} ${rng}`;
+  } else {
+    body = `<h1>${esc(S.config.buque.toUpperCase())} — PLANILLA ANUAL DE ACTIVIDADES ${year}</h1>` + docAnual(year);
+    name = `Planilla anual ${year}`;
+  }
+  const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>${esc(name)}</title>
+    <!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom></w:WordDocument></xml><![endif]--><style>${DOC_CSS}</style></head><body><div class="Section1">${body}</div></body></html>`;
+  if (how === "word"){ download(name.replace(/[\\/:*?"<>|]/g,"") + ".doc", "﻿" + html, "application/msword"); toast("Documento Word descargado"); return; }
+  const fr = $("#printframe"); const d = fr.contentDocument; d.open(); d.write(html); d.close();
+  setTimeout(()=>{ fr.contentWindow.focus(); fr.contentWindow.print(); }, 250);
+}
+
+boot();
+</script>
+</body>
+</html>
